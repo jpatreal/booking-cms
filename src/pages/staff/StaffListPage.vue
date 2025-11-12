@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-5">
-    <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
       <div>
         <h1 class="text-xl font-semibold text-slate-50">Staff</h1>
@@ -14,7 +13,6 @@
       </BaseButton>
     </div>
 
-    <!-- Filters -->
     <div
       class="flex flex-col md:flex-row md:items-center gap-3 bg-slate-900/80 border border-slate-800 rounded-2xl px-3 py-3"
     >
@@ -32,16 +30,14 @@
           <RefreshCcw class="w-3.5 h-3.5" />
           <span>Reset</span>
         </BaseButton>
-        <BaseButton variant="outline" @click="loadStaff">
+        <BaseButton variant="outline" @click="applyFilters">
           <Filter class="w-3.5 h-3.5" />
           <span>Apply</span>
         </BaseButton>
       </div>
     </div>
 
-    <!-- List -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-2xl">
-      <!-- header row -->
       <div
         class="grid grid-cols-[minmax(0,2.6fr)_minmax(0,1.6fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 px-4 py-2 text-[9px] text-slate-500 border-b border-slate-800"
       >
@@ -52,20 +48,17 @@
         <div class="text-right">Actions</div>
       </div>
 
-      <!-- loading / empty -->
       <div v-if="loading" class="px-4 py-6 text-xs text-slate-500">Loading staff...</div>
       <div v-else-if="staffList.length === 0" class="px-4 py-6 text-xs text-slate-500">
         No staff yet. Add your team members so customers can book with them.
       </div>
 
-      <!-- rows -->
       <div v-else class="divide-y divide-slate-800">
         <div
           v-for="s in staffList"
           :key="s.id"
           class="grid grid-cols-[minmax(0,2.6fr)_minmax(0,1.6fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 px-4 py-3 text-[10px] items-center hover:bg-slate-900"
         >
-          <!-- Staff identity -->
           <div class="flex items-center gap-3">
             <div
               class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-semibold uppercase"
@@ -89,7 +82,6 @@
             </div>
           </div>
 
-          <!-- Contact -->
           <div class="flex flex-col text-slate-300 gap-0.5">
             <div v-if="s.email" class="flex items-center gap-1">
               <Mail class="w-3 h-3 text-slate-500" />
@@ -102,12 +94,10 @@
             <div v-if="!s.email && !s.phone" class="text-[9px] text-slate-500">No contact info</div>
           </div>
 
-          <!-- Role (placeholder for now) -->
           <div>
             <Badge variant="muted"> Staff </Badge>
           </div>
 
-          <!-- Status with toggle -->
           <div class="flex items-center gap-2">
             <button
               class="flex items-center"
@@ -122,9 +112,7 @@
             </span>
           </div>
 
-          <!-- Actions -->
           <div class="flex items-center justify-end gap-1">
-            <!-- manage services, schedule, time-off - stubs to detail page/drawers -->
             <IconButton :icon="Settings" title="Manage services" @click="openManageServices(s)" />
             <IconButton
               :icon="CalendarDays"
@@ -137,9 +125,15 @@
           </div>
         </div>
       </div>
+      <PaginationBar
+        v-if="totalData > pageSize"
+        :page="page"
+        :page-size="pageSize"
+        :total="totalData"
+        @update:page="onPageChange"
+      />
     </div>
 
-    <!-- Create/Edit Staff Modal -->
     <Modal
       :open="showForm"
       :title="editing ? 'Edit staff member' : 'Add staff member'"
@@ -223,6 +217,7 @@ import ConfirmDialog from '../../components/ui/ConfirmDialog.vue';
 import StaffServicesDrawer from '../../components/staff/StaffServicesDrawer.vue';
 import StaffAvailabilityDrawer from '../../components/staff/StaffAvailabilityDrawer.vue';
 import StaffTimeOffDrawer from '../../components/staff/StaffTimeOffDrawer.vue';
+import PaginationBar from '../../components/ui/PaginationBar.vue';
 
 import {
   listStaff,
@@ -255,13 +250,15 @@ const staffList = ref<Staff[]>([]);
 const loading = ref(false);
 const saving = ref(false);
 
-// filter state
+const page = ref(1);
+const pageSize = 20;
+const totalData = ref(0);
+
 const filters = ref({
   q: '',
   activeOnly: true,
 });
 
-// form state
 const showForm = ref(false);
 const editing = ref<Staff | null>(null);
 const form = ref({
@@ -271,7 +268,7 @@ const form = ref({
   bio: '',
 });
 
-// delete confirm state
+// delete confirm
 const confirmOpen = ref(false);
 const confirmLoading = ref(false);
 const toDelete = ref<Staff | null>(null);
@@ -281,6 +278,12 @@ const confirmMessage = computed(() =>
     ? `Remove "${toDelete.value.name}" from this business? Existing bookings will keep this staff assigned, but they will no longer appear in new bookings unless re-added.`
     : 'Remove this staff member?'
 );
+
+// drawers
+const selectedStaff = ref<Staff | null>(null);
+const showServices = ref(false);
+const showAvailability = ref(false);
+const showTimeOff = ref(false);
 
 // helpers
 function initials(name: string): string {
@@ -292,7 +295,7 @@ function initials(name: string): string {
     .join('');
 }
 
-function avatarBg(s: Staff): any {
+function avatarBg(s: Staff): string | undefined {
   if (s.color) return s.color;
   const seed = s.name || s.id;
   let hash = 0;
@@ -303,18 +306,28 @@ function avatarBg(s: Staff): any {
   return palette[Math.abs(hash) % palette.length];
 }
 
-// load
+// load staff with pagination + filters
 async function loadStaff() {
   if (!businessStore.current) return;
   loading.value = true;
+
   try {
-    const { items } = await listStaff({
+    const {
+      items,
+      total,
+      page: currentPage,
+      pageSize: serverPageSize,
+    } = await listStaff({
       q: filters.value.q || undefined,
       activeOnly: filters.value.activeOnly,
-      page: 1,
-      pageSize: 50,
+      page: page.value,
+      pageSize,
     });
+
     staffList.value = items;
+    totalData.value = total ?? items.length;
+
+    if (currentPage) page.value = currentPage;
   } catch (e) {
     toasts.error('Failed to load staff.');
   } finally {
@@ -322,20 +335,26 @@ async function loadStaff() {
   }
 }
 
+function applyFilters() {
+  page.value = 1;
+  loadStaff();
+}
+
 function resetFilters() {
   filters.value = { q: '', activeOnly: true };
+  page.value = 1;
+  loadStaff();
+}
+
+function onPageChange(newPage: number) {
+  page.value = newPage;
   loadStaff();
 }
 
 // create/edit
 function openCreate() {
   editing.value = null;
-  form.value = {
-    name: '',
-    email: '',
-    phone: '',
-    bio: '',
-  };
+  form.value = { name: '', email: '', phone: '', bio: '' };
   showForm.value = true;
 }
 
@@ -378,11 +397,13 @@ async function save() {
       toasts.success('Staff updated successfully.');
     } else {
       const created = await createStaff(payload);
+      // prepend to current page
       staffList.value = [created, ...staffList.value];
+      totalData.value += 1;
       toasts.success('Staff created successfully.');
     }
     closeForm();
-  } catch (e) {
+  } catch {
     toasts.error('Failed to save staff. Please check details and try again.');
   } finally {
     saving.value = false;
@@ -399,7 +420,7 @@ async function onToggleActive(s: Staff) {
     toasts.success(
       updated.isActive ? `“${updated.name}” is now active.` : `“${updated.name}” is now inactive.`
     );
-  } catch (e) {
+  } catch {
     s.isActive = prev;
     toasts.error('Failed to update status.');
   }
@@ -423,35 +444,31 @@ async function performDelete() {
   try {
     await deleteStaff(toDelete.value.id);
     staffList.value = staffList.value.filter((x) => x.id !== toDelete.value?.id);
+    totalData.value = Math.max(0, totalData.value - 1);
     toasts.success('Staff removed.');
     confirmOpen.value = false;
     toDelete.value = null;
-  } catch (e) {
+  } catch {
     toasts.error('Failed to remove staff.');
   } finally {
     confirmLoading.value = false;
   }
 }
 
-const selectedStaff = ref<Staff | null>(null);
-const showServices = ref(false);
-const showAvailability = ref(false);
-const showTimeOff = ref(false);
-
+// drawers openers
 function openManageServices(s: Staff) {
   selectedStaff.value = s;
   showServices.value = true;
 }
-
 function openAvailability(s: Staff) {
   selectedStaff.value = s;
   showAvailability.value = true;
 }
-
 function openTimeOff(s: Staff) {
   selectedStaff.value = s;
   showTimeOff.value = true;
 }
+
 onMounted(() => {
   loadStaff();
 });

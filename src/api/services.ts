@@ -13,7 +13,7 @@ export interface Service {
 
 export interface ServiceQuery {
   q?: string;
-  active?: boolean;
+  active?: string;
   sortBy?: 'name' | 'price' | 'duration' | 'createdAt';
   order?: 'asc' | 'desc';
   page?: number;
@@ -48,9 +48,11 @@ function mapServiceRow(raw: any): Service {
 
 export async function listServices(params: ServiceQuery = {}): Promise<{
   items: Service[];
-  total: number;
-  page: number;
-  pageSize: number;
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+  };
 }> {
   const businessId = getBusinessIdOrThrow();
 
@@ -71,9 +73,7 @@ export async function listServices(params: ServiceQuery = {}): Promise<{
 
   return {
     items,
-    total: meta.total ?? items.length,
-    page: meta.page ?? 1,
-    pageSize: meta.pageSize ?? items.length,
+    meta,
   };
 }
 

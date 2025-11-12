@@ -116,7 +116,10 @@
           {{ userInitials }}
         </div>
         <div class="hidden sm:flex flex-col leading-tight text-left">
-          <span class="text-[9px] text-slate-400"> Logged in </span>
+          <span class="text-[9px] text-slate-400">
+            {{ authStore.loadingMe ? 'Loading account…' : 'Logged in' }}
+          </span>
+
           <span class="text-[9px] text-slate-200 truncate max-w-[120px]">
             {{ userEmail || 'Account' }}
           </span>
@@ -173,7 +176,7 @@ const userMenuOpen = ref(false);
 
 const userEmail = computed(() => authStore.me?.email || '');
 const userInitials = computed(() => {
-  if (userEmail.value) return userEmail.value.charAt(0).toUpperCase();
+  if (authStore.me?.email) return authStore.me.email.charAt(0).toUpperCase();
   return 'U';
 });
 

@@ -57,6 +57,10 @@ api.interceptors.response.use(
 
     const auth = useAuthStore();
 
+    if (originalRequest._skipAuthRefresh || originalRequest.url?.includes('/auth/refresh')) {
+      return Promise.reject(error);
+    }
+
     if (
       response.status === 401 &&
       !originalRequest._retry &&

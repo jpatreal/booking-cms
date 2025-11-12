@@ -66,23 +66,13 @@ import BaseButton from '../../components/ui/BaseButton.vue';
 import { useToastsStore } from '../../stores/toasts';
 import { fetchStaffAvailability, upsertStaffAvailability, type Staff } from '../../api/staff';
 
-const props = defineProps<{
-  open: boolean;
-  staff: Staff | null;
-}>();
-
-const emit = defineEmits<{
-  (e: 'close'): void;
-  (e: 'updated'): void;
-}>();
+const props = defineProps<{ open: boolean; staff: Staff | null }>();
+const emit = defineEmits<{ (e: 'close'): void; (e: 'updated'): void }>();
 
 const toasts = useToastsStore();
-
 const loading = ref(false);
 const saving = ref(false);
-
 const staffId = computed(() => props.staff?.id || '');
-
 const days = ref([
   { value: 1, label: 'Mon', enabled: false, start: '09:00', end: '17:00' },
   { value: 2, label: 'Tue', enabled: false, start: '09:00', end: '17:00' },
@@ -100,9 +90,7 @@ function emitClose() {
 watch(
   () => props.open,
   async (isOpen) => {
-    if (isOpen && staffId.value) {
-      await load();
-    }
+    if (isOpen && staffId.value) await load();
   }
 );
 
@@ -115,8 +103,8 @@ async function load() {
       const found = map.get(d.value);
       if (found) {
         d.enabled = true;
-        d.start = found.startTimeLocal.slice(0, 5);
-        d.end = found.endTimeLocal.slice(0, 5);
+        d.start = (found.startTimeLocal || '').slice(0, 5) || '09:00';
+        d.end = (found.endTimeLocal || '').slice(0, 5) || '17:00';
       } else {
         d.enabled = false;
       }
@@ -128,24 +116,38 @@ async function load() {
   }
 }
 
+function validTime(hhmm: string) {
+  return /^\d{2}:\d{2}$/.test(hhmm);
+}
+
 async function save() {
   if (!staffId.value) return;
   saving.value = true;
   try {
-    const items = days.value
-      .filter((d) => d.enabled)
-      .map((d) => ({
-        dayOfWeek: d.value,
-        startTimeLocal: d.start + ':00',
-        endTimeLocal: d.end + ':00',
-      }));
+    const enabled = days.value.filter((d) => d.enabled);
+
+    // basic validations
+    for (const d of enabled) {
+      if (!validTime(d.start) || !validTime(d.end)) {
+        throw new Error(`Invalid time on ${d.label}. Expected HH:mm`);
+      }
+      if (d.start >= d.end) {
+        throw new Error(`Start must be before end on ${d.label}.`);
+      }
+    }
+
+    const items = enabled.map((d) => ({
+      dayOfWeek: d.value,
+      startTimeLocal: `${d.start}:00`,
+      endTimeLocal: `${d.end}:00`,
+    }));
 
     await upsertStaffAvailability(staffId.value, items);
     toasts.success('Availability updated.');
     emit('updated');
     emitClose();
-  } catch (e) {
-    toasts.error('Failed to save availability.');
+  } catch (e: any) {
+    toasts.error(e?.data?.message || e?.message || 'Failed to save availability.');
   } finally {
     saving.value = false;
   }

@@ -10,6 +10,30 @@ const routes: any[] = [
     meta: { public: true },
   },
   {
+    path: '/register',
+    name: 'register',
+    component: () => import('../pages/auth/Register.vue'),
+    meta: { public: true },
+  },
+  {
+    path: '/forgot-password',
+    name: 'request-reset',
+    component: () => import('../pages/auth/RequestReset.vue'),
+    meta: { public: true },
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: () => import('../pages/auth/ResetPassword.vue'),
+    meta: { public: true },
+  },
+  {
+    path: '/verify-email',
+    name: 'verify-email',
+    component: () => import('../pages/auth/VerifyEmail.vue'),
+    meta: { public: true },
+  },
+  {
     path: '/app',
     name: 'business-select',
     component: () => import('../pages/businesses/SelectBusiness.vue'),
@@ -23,26 +47,39 @@ const routes: any[] = [
         name: 'dashboard',
         component: () => import('../pages/dashboard/DashboardPage.vue'),
       },
-      // {
-      //   path: 'bookings',
-      //   name: 'bookings',
-      //   component: () => import('@/pages/bookings/BookingsListPage.vue'),
-      // },
+      {
+        path: 'settings',
+        name: 'business-settings',
+        component: () => import('../pages/businesses/BusinessSettingsPage.vue'),
+      },
+      {
+        path: 'bookings',
+        name: 'bookings-list',
+        component: () => import('../pages/bookings/BookingsPage.vue'),
+      },
+
       {
         path: 'staff',
         name: 'staff-list',
         component: () => import('../pages/staff/StaffListPage.vue'),
       },
-      // {
-      //   path: 'staff/availability',
-      //   name: 'staff-availability',
-      //   component: () => import('@/pages/staff/StaffAvailabilityPage.vue'),
-      // },
+      {
+        path: 'team',
+        name: 'team-access',
+        component: () => import('../pages/memberships/TeamAccessPage.vue'),
+      },
       {
         path: 'services',
         name: 'services-list',
         component: () => import('../pages/services/ServicesListPage.vue'),
       },
+      // router children under /app/:businessSlug
+      {
+        path: 'audit-logs',
+        name: 'audit-logs',
+        component: () => import('../pages/audit/AuditLogsPage.vue'),
+      },
+
       // {
       //   path: 'customers',
       //   name: 'customers-list',

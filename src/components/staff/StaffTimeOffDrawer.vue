@@ -96,29 +96,22 @@ import {
   type Staff,
   type StaffTimeOff,
 } from '../../api/staff';
+import { fromZonedTime } from 'date-fns-tz';
 
 const props = defineProps<{
   open: boolean;
   staff: Staff | null;
+  businessTz: string; // <-- pass e.g. bookingConfig.business.timezone
 }>();
 
-const emit = defineEmits<{
-  (e: 'close'): void;
-  (e: 'updated'): void;
-}>();
-
+const emit = defineEmits<{ (e: 'close'): void; (e: 'updated'): void }>();
 const toasts = useToastsStore();
 
 const items = ref<StaffTimeOff[]>([]);
 const loading = ref(false);
 const creating = ref(false);
 
-const form = ref({
-  start: '',
-  end: '',
-  reason: '',
-});
-
+const form = ref({ start: '', end: '', reason: '' });
 const staffId = computed(() => props.staff?.id || '');
 
 function emitClose() {
@@ -128,9 +121,7 @@ function emitClose() {
 watch(
   () => props.open,
   async (isOpen) => {
-    if (isOpen && staffId.value) {
-      await load();
-    }
+    if (isOpen && staffId.value) await load();
   }
 );
 
@@ -138,42 +129,71 @@ async function load() {
   loading.value = true;
   try {
     items.value = await fetchStaffTimeOff(staffId.value);
-  } catch (e) {
+  } catch {
     toasts.error('Failed to load time off.');
   } finally {
     loading.value = false;
   }
 }
 
-function toIsoUtc(local: string): string {
-  // naive: assume local is already in UTC-like; adapt if your app uses timezone-aware conversion
-  return new Date(local).toISOString();
+// Build "YYYY-MM-DDTHH:mm:00"
+function asLocalIsoSeconds(v: string) {
+  if (!v) return '';
+  return v.length === 16 ? `${v}:00` : v;
+}
+
+function bizLocalToUtc(local: string, tz: string): string {
+  const localIso = asLocalIsoSeconds(local);
+  const utcDate = fromZonedTime(localIso, tz || 'UTC');
+  return utcDate.toISOString();
+}
+
+function sameLocalDay(a: string, b: string, tz: string) {
+  const A = new Date(fromZonedTime(asLocalIsoSeconds(a), tz));
+  const B = new Date(fromZonedTime(asLocalIsoSeconds(b), tz));
+  return (
+    A.getUTCFullYear() === B.getUTCFullYear() &&
+    A.getUTCMonth() === B.getUTCMonth() &&
+    A.getUTCDate() === B.getUTCDate()
+  );
 }
 
 async function create() {
   if (!staffId.value) return;
+
   if (!form.value.start || !form.value.end) {
     toasts.error('Start and end are required.');
     return;
   }
 
+  // Frontend validations mirroring backend
+  const tz = props.businessTz || 'UTC';
+  if (!sameLocalDay(form.value.start, form.value.end, tz)) {
+    toasts.error('Time off cannot cross days. Create separate entries per day.');
+    return;
+  }
+
+  const startUtc = bizLocalToUtc(form.value.start, tz);
+  const endUtc = bizLocalToUtc(form.value.end, tz);
+
+  if (new Date(startUtc) >= new Date(endUtc)) {
+    toasts.error('Start must be before end.');
+    return;
+  }
+
   creating.value = true;
   try {
-    const startUtc = toIsoUtc(form.value.start);
-    const endUtc = toIsoUtc(form.value.end);
-
     const created = await createStaffTimeOff(staffId.value, {
       startUtc,
       endUtc,
       reason: form.value.reason.trim(),
     });
-
     items.value = [created, ...items.value];
     form.value = { start: '', end: '', reason: '' };
     toasts.success('Time off added.');
     emit('updated');
-  } catch (e) {
-    toasts.error('Failed to add time off.');
+  } catch (e: any) {
+    toasts.error(e?.data?.message || 'Failed to add time off.');
   } finally {
     creating.value = false;
   }
@@ -186,18 +206,20 @@ async function remove(t: StaffTimeOff) {
     items.value = items.value.filter((x) => x.id !== t.id);
     toasts.success('Time off removed.');
     emit('updated');
-  } catch (e) {
-    toasts.error('Failed to remove time off.');
+  } catch (e: any) {
+    toasts.error(e?.data?.message || 'Failed to remove time off.');
   }
 }
 
 function fmt(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleString(undefined, {
+  const tz = props.businessTz || 'UTC';
+  return new Intl.DateTimeFormat('en-PH', {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  });
+    hour12: true,
+    timeZone: tz,
+  }).format(new Date(iso));
 }
 </script>
