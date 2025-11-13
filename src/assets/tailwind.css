@@ -9,3 +9,25 @@ body {
 .icon-btn svg {
   @apply w-3.5 h-3.5;
 }
+
+@layer components {
+  .cms-caption {
+    @apply text-[14px] text-slate-400;
+  }
+
+  .cms-caption-muted {
+    @apply text-[11px] text-slate-500;
+  }
+
+  .cms-label {
+    @apply text-xs text-slate-400;
+  }
+
+  .cms-helper {
+    @apply text-xs text-slate-500;
+  }
+
+  .cms-chip {
+    @apply text-[11px] font-medium;
+  }
+}

@@ -1,16 +1,15 @@
-<!-- src/pages/memberships/TeamAccessPage.vue -->
 <template>
   <div class="space-y-5">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
       <div>
         <h1 class="text-xl font-semibold text-slate-50">Team & access</h1>
-        <p class="text-[10px] text-slate-500">
-          Manage who can access this business and what they’re allowed to do.
+        <p class="cms-caption">
+          Manage who can access this workspace and what they’re allowed to do.
         </p>
       </div>
-      <div class="flex items-center gap-2 text-[8px] text-slate-500">
-        <span class="px-2 py-0.5 rounded-full bg-slate-950/80 border border-slate-800">
+      <div class="flex items-center gap-2 cms-helper text-slate-500">
+        <span class="px-2 py-0.5 rounded-full bg-slate-950/80 border border-slate-800 cms-chip">
           Only owners can manage members.
         </span>
       </div>
@@ -22,14 +21,14 @@
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-[11px] font-semibold text-slate-50">Members</h2>
-            <p class="text-[9px] text-slate-500">People who can log in and manage this business.</p>
+            <p class="cms-helper">People who can sign in and help manage this business.</p>
           </div>
-          <div class="flex items-center gap-1 text-[8px]">
-            <label class="inline-flex items-center gap-1 text-slate-500 cursor-pointer">
+          <div class="flex items-center gap-1 cms-helper text-slate-500">
+            <label class="inline-flex items-center gap-1 cursor-pointer">
               <input
                 type="checkbox"
                 v-model="includeDisabled"
-                class="w-3 h-3 accent-brand-500"
+                class="w-3.5 h-3.5 accent-brand-500"
                 @change="loadMemberships"
               />
               <span>Show disabled</span>
@@ -42,19 +41,19 @@
           class="flex flex-col md:flex-row gap-2 items-stretch md:items-end bg-slate-950 border border-slate-900 rounded-2xl px-2.5 py-2"
         >
           <div class="flex-1 space-y-1">
-            <label class="block text-[8px] text-slate-500"> Invite member by email </label>
+            <label class="cms-label">Invite member by email</label>
             <input
               v-model="inviteEmail"
               type="email"
               placeholder="name@example.com"
-              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[11px] text-slate-100 outline-none focus:border-brand-500/80"
             />
           </div>
-          <div class="w-28 space-y-1">
-            <label class="block text-[8px] text-slate-500"> Role </label>
+          <div class="w-32 space-y-1">
+            <label class="cms-label">Role</label>
             <select
               v-model="inviteRole"
-              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[11px] text-slate-100 outline-none focus:border-brand-500/80"
             >
               <option value="MANAGER">Manager</option>
               <option value="STAFF">Staff</option>
@@ -70,7 +69,7 @@
         <!-- Members table -->
         <div class="mt-1">
           <div
-            class="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)] gap-2 px-2 py-1 text-[8px] text-slate-500 border-b border-slate-800"
+            class="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)] gap-2 px-2 py-1 text-[11px] text-slate-500 border-b border-slate-800 uppercase tracking-wide"
           >
             <div>Member</div>
             <div>Role</div>
@@ -78,33 +77,31 @@
             <div class="text-right">Actions</div>
           </div>
 
-          <div v-if="loadingMembers" class="px-2 py-3 text-[9px] text-slate-500">
-            Loading members...
-          </div>
+          <div v-if="loadingMembers" class="px-2 py-3 cms-helper">Loading members...</div>
 
-          <div v-else-if="members.length === 0" class="px-2 py-3 text-[9px] text-slate-500">
-            No members yet. Invite your team to help manage bookings.
+          <div v-else-if="members.length === 0" class="px-2 py-3 cms-caption">
+            No members yet. Invite your team to help manage bookings and operations.
           </div>
 
           <div v-else class="divide-y divide-slate-800">
             <div
               v-for="m in members"
               :key="m.id"
-              class="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)] gap-2 px-2 py-2 items-center text-[9px]"
+              class="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)] gap-2 px-2 py-2 items-center text-[14px]"
             >
               <!-- Member identity -->
               <div class="flex items-center gap-2">
                 <div
-                  class="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center text-[8px] text-slate-300"
+                  class="w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center text-[14px] text-slate-100 font-semibold"
                 >
                   {{ m.userEmail.charAt(0).toUpperCase() }}
                 </div>
                 <div class="flex flex-col">
                   <span class="text-slate-100 truncate">
                     {{ m.userEmail }}
-                    <span v-if="isSelf(m)" class="ml-1 text-[7px] text-emerald-400"> (You) </span>
+                    <span v-if="isSelf(m)" class="text-[11px] text-emerald-400 ml-1"> (You) </span>
                   </span>
-                  <span class="text-[7px] text-slate-500">
+                  <span class="text-[11px] text-slate-500">
                     Joined: {{ formatDate(m.createdAt) }}
                   </span>
                 </div>
@@ -122,7 +119,7 @@
                   :class="m.disabledAt ? 'bg-slate-600' : 'bg-emerald-400'"
                 />
                 <span
-                  class="text-[8px]"
+                  class="text-[10px]"
                   :class="m.disabledAt ? 'text-slate-500' : 'text-emerald-400'"
                 >
                   {{ m.disabledAt ? 'Disabled' : 'Active' }}
@@ -134,7 +131,7 @@
                 <!-- Role select (cannot change OWNER or yourself) -->
                 <select
                   v-model="roleDraft[m.id]"
-                  class="bg-slate-950 border border-slate-800 rounded-lg px-1 py-0.5 text-[7px] text-slate-300 outline-none"
+                  class="bg-slate-950 border border-slate-800 rounded-lg px-1.5 py-0.5 text-[10px] text-slate-300 outline-none"
                   :disabled="!canEditMember(m)"
                   @change="onChangeRole(m)"
                 >
@@ -171,27 +168,25 @@
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-[11px] font-semibold text-slate-50">Pending invites</h2>
-            <p class="text-[9px] text-slate-500">Invites waiting to be accepted.</p>
+            <p class="cms-helper">Invitations that haven’t been accepted yet.</p>
           </div>
         </div>
 
-        <div v-if="loadingInvites" class="text-[9px] text-slate-500">Loading invites...</div>
+        <div v-if="loadingInvites" class="cms-helper">Loading invites...</div>
 
-        <div v-else-if="invites.length === 0" class="text-[9px] text-slate-500">
-          No pending invites.
-        </div>
+        <div v-else-if="invites.length === 0" class="cms-helper">No pending invites.</div>
 
         <div v-else class="space-y-2">
           <div
             v-for="i in invites"
             :key="i.id"
-            class="flex items-center justify-between gap-2 px-2 py-1.5 rounded-xl bg-slate-950 border border-slate-900 text-[8px]"
+            class="flex items-center justify-between gap-2 px-2 py-1.5 rounded-xl bg-slate-950 border border-slate-900 text-[11px]"
           >
             <div class="flex flex-col">
               <span class="text-slate-100">
                 {{ i.email }}
               </span>
-              <span class="text-[7px] text-slate-500">
+              <span class="text-[9px] text-slate-500">
                 Role: {{ i.role }} • Expires: {{ formatDate(i.expiresAt) }}
               </span>
             </div>

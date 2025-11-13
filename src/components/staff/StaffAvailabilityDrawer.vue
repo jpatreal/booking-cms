@@ -10,40 +10,40 @@
       >
         <header class="flex items-center justify-between gap-2">
           <div>
-            <h2 class="text-sm font-semibold text-slate-50">Availability for {{ staff.name }}</h2>
-            <p class="text-[10px] text-slate-500">Define regular working hours per weekday.</p>
+            <h2 class="text-base font-semibold text-slate-50">Availability for {{ staff.name }}</h2>
+            <p class="cms-caption">Define regular working hours per weekday.</p>
           </div>
-          <button class="text-slate-500 hover:text-slate-200 text-xs" @click="emitClose">✕</button>
+          <button class="text-slate-500 hover:text-slate-200 text-sm" @click="emitClose">✕</button>
         </header>
 
         <div class="flex-1 overflow-y-auto space-y-2">
-          <div v-if="loading" class="text-xs text-slate-500">Loading availability...</div>
+          <div v-if="loading" class="text-sm text-slate-500">Loading availability...</div>
 
-          <div v-else class="space-y-1.5 text-[9px]">
+          <div v-else class="space-y-1.5 text-sm">
             <div
               v-for="day in days"
               :key="day.value"
               class="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800"
             >
-              <label class="w-16 font-medium text-slate-100">
+              <label class="w-20 font-medium text-slate-100">
                 {{ day.label }}
               </label>
-              <label class="inline-flex items-center gap-1 text-slate-400">
-                <input type="checkbox" v-model="day.enabled" class="w-3 h-3 accent-brand-500" />
+              <label class="inline-flex items-center gap-2 text-slate-400">
+                <input type="checkbox" v-model="day.enabled" class="w-4 h-4 accent-brand-500" />
                 <span>Open</span>
               </label>
               <input
                 v-model="day.start"
                 :disabled="!day.enabled"
                 type="time"
-                class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 outline-none text-[9px] text-slate-100 disabled:opacity-40"
+                class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 outline-none text-sm text-slate-100 disabled:opacity-40"
               />
               <span>-</span>
               <input
                 v-model="day.end"
                 :disabled="!day.enabled"
                 type="time"
-                class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 outline-none text-[9px] text-slate-100 disabled:opacity-40"
+                class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 outline-none text-sm text-slate-100 disabled:opacity-40"
               />
             </div>
           </div>

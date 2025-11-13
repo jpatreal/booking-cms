@@ -3,12 +3,12 @@
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
       <div>
         <h1 class="text-xl font-semibold text-slate-50">Staff</h1>
-        <p class="text-[10px] text-slate-500">
+        <p class="cms-caption">
           Manage your team, their visibility, and what services they can perform.
         </p>
       </div>
       <BaseButton variant="primary" @click="openCreate">
-        <UserPlus class="w-3.5 h-3.5" />
+        <UserPlus class="w-4 h-4" />
         <span>Add staff</span>
       </BaseButton>
     </div>
@@ -19,19 +19,21 @@
       <div class="flex-1">
         <TextInput v-model="filters.q" placeholder="Search by name, email, or phone..." />
       </div>
-      <div class="flex items-center gap-3 text-[10px] text-slate-400">
-        <label class="inline-flex items-center gap-1 cursor-pointer">
-          <input type="checkbox" v-model="filters.activeOnly" class="w-3 h-3 accent-brand-500" />
+
+      <div class="flex items-center gap-3 text-sm text-slate-400">
+        <label class="inline-flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" v-model="filters.activeOnly" class="w-4 h-4 accent-brand-500" />
           <span>Active only</span>
         </label>
       </div>
-      <div class="flex items-center gap-2 text-[10px]">
+
+      <div class="flex items-center gap-2 text-sm">
         <BaseButton variant="ghost" @click="resetFilters">
-          <RefreshCcw class="w-3.5 h-3.5" />
+          <RefreshCcw class="w-4 h-4" />
           <span>Reset</span>
         </BaseButton>
         <BaseButton variant="outline" @click="applyFilters">
-          <Filter class="w-3.5 h-3.5" />
+          <Filter class="w-4 h-4" />
           <span>Apply</span>
         </BaseButton>
       </div>
@@ -39,7 +41,7 @@
 
     <div class="bg-slate-900/80 border border-slate-800 rounded-2xl">
       <div
-        class="grid grid-cols-[minmax(0,2.6fr)_minmax(0,1.6fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 px-4 py-2 text-[9px] text-slate-500 border-b border-slate-800"
+        class="grid grid-cols-[minmax(0,2.6fr)_minmax(0,1.6fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 px-4 py-2 text-sm text-slate-500 border-b border-slate-800"
       >
         <div>Staff</div>
         <div>Contact</div>
@@ -48,8 +50,8 @@
         <div class="text-right">Actions</div>
       </div>
 
-      <div v-if="loading" class="px-4 py-6 text-xs text-slate-500">Loading staff...</div>
-      <div v-else-if="staffList.length === 0" class="px-4 py-6 text-xs text-slate-500">
+      <div v-if="loading" class="px-4 py-6 text-sm text-slate-500">Loading staff...</div>
+      <div v-else-if="staffList.length === 0" class="px-4 py-6 text-sm text-slate-500">
         No staff yet. Add your team members so customers can book with them.
       </div>
 
@@ -57,11 +59,12 @@
         <div
           v-for="s in staffList"
           :key="s.id"
-          class="grid grid-cols-[minmax(0,2.6fr)_minmax(0,1.6fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 px-4 py-3 text-[10px] items-center hover:bg-slate-900"
+          class="grid grid-cols-[minmax(0,2.6fr)_minmax(0,1.6fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 px-4 py-3 text-sm items-center hover:bg-slate-900"
         >
+          <!-- Staff -->
           <div class="flex items-center gap-3">
             <div
-              class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-semibold uppercase"
+              class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold uppercase"
               :style="{ backgroundColor: avatarBg(s), color: '#0f172a' }"
             >
               {{ initials(s.name) }}
@@ -71,48 +74,52 @@
                 {{ s.name }}
                 <span
                   v-if="s.userId"
-                  class="ml-1 text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-600/60 align-middle"
+                  class="ml-1 text-xs px-2 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-600/60 align-middle"
                 >
                   Linked user
                 </span>
               </div>
-              <div v-if="s.bio" class="text-[9px] text-slate-500 line-clamp-1">
+              <div v-if="s.bio" class="text-xs text-slate-500 line-clamp-1">
                 {{ s.bio }}
               </div>
             </div>
           </div>
 
+          <!-- Contact -->
           <div class="flex flex-col text-slate-300 gap-0.5">
-            <div v-if="s.email" class="flex items-center gap-1">
-              <Mail class="w-3 h-3 text-slate-500" />
-              <span class="truncate">{{ s.email }}</span>
+            <div v-if="s.email" class="flex items-center gap-1.5">
+              <Mail class="w-4 h-4 text-slate-500" />
+              <span class="truncate text-sm">{{ s.email }}</span>
             </div>
-            <div v-if="s.phone" class="flex items-center gap-1">
-              <Phone class="w-3 h-3 text-slate-500" />
-              <span class="truncate">{{ s.phone }}</span>
+            <div v-if="s.phone" class="flex items-center gap-1.5">
+              <Phone class="w-4 h-4 text-slate-500" />
+              <span class="truncate text-sm">{{ s.phone }}</span>
             </div>
-            <div v-if="!s.email && !s.phone" class="text-[9px] text-slate-500">No contact info</div>
+            <div v-if="!s.email && !s.phone" class="text-xs text-slate-500">No contact info</div>
           </div>
 
+          <!-- Role -->
           <div>
             <Badge variant="muted"> Staff </Badge>
           </div>
 
+          <!-- Status -->
           <div class="flex items-center gap-2">
             <button
               class="flex items-center"
               :title="s.isActive ? 'Click to deactivate' : 'Click to activate'"
               @click="onToggleActive(s)"
             >
-              <ToggleRight v-if="s.isActive" class="w-5 h-5 text-emerald-400" />
-              <ToggleLeft v-else class="w-5 h-5 text-slate-500" />
+              <ToggleRight v-if="s.isActive" class="w-6 h-6 text-emerald-400" />
+              <ToggleLeft v-else class="w-6 h-6 text-slate-500" />
             </button>
-            <span class="text-[9px]" :class="s.isActive ? 'text-emerald-400' : 'text-slate-500'">
+            <span class="text-sm" :class="s.isActive ? 'text-emerald-400' : 'text-slate-500'">
               {{ s.isActive ? 'Active' : 'Inactive' }}
             </span>
           </div>
 
-          <div class="flex items-center justify-end gap-1">
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-1.5">
             <IconButton :icon="Settings" title="Manage services" @click="openManageServices(s)" />
             <IconButton
               :icon="CalendarDays"
@@ -125,6 +132,7 @@
           </div>
         </div>
       </div>
+
       <PaginationBar
         v-if="totalData > pageSize"
         :page="page"
@@ -134,6 +142,7 @@
       />
     </div>
 
+    <!-- Create / Edit Modal -->
     <Modal
       :open="showForm"
       :title="editing ? 'Edit staff member' : 'Add staff member'"
@@ -197,6 +206,7 @@
     <StaffTimeOffDrawer
       :open="showTimeOff"
       :staff="selectedStaff"
+      business-tz="Asia/Manila"
       @close="showTimeOff = false"
       @updated="loadStaff"
     />

@@ -3,10 +3,8 @@
     <!-- Header -->
     <section class="flex flex-col gap-1">
       <h1 class="text-xl font-semibold text-slate-50">Business settings</h1>
-      <p class="text-[10px] text-slate-500">
-        Configure your business profile, opening hours, and lifecycle.
-      </p>
-      <p v-if="business" class="text-[9px] text-slate-600">
+      <p class="cms-caption">Configure your business profile, opening hours, and lifecycle.</p>
+      <p v-if="business" class="cms-helper text-slate-400">
         Managing:
         <span class="text-slate-200 font-medium">{{ business.name }}</span>
         <span class="text-slate-500">({{ business.slug }})</span>
@@ -20,27 +18,27 @@
         <!-- Profile card -->
         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl px-4 py-3 space-y-3">
           <div>
-            <h2 class="text-[11px] font-semibold text-slate-50">Business profile</h2>
-            <p class="text-[9px] text-slate-500">
+            <h2 class="text-sm font-semibold text-slate-50">Business profile</h2>
+            <p class="cms-caption">
               Basic details shown on your booking page and inside the dashboard.
             </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[10px]">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div class="space-y-1">
-              <label class="block text-[8px] text-slate-500">Name</label>
+              <label class="block cms-label">Name</label>
               <input
                 v-model="form.name"
                 type="text"
-                class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+                class="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
                 placeholder="Your business name"
               />
             </div>
 
             <div class="space-y-1">
-              <label class="block text-[8px] text-slate-500">Slug</label>
+              <label class="block cms-label">Slug</label>
               <div
-                class="w-full rounded-xl bg-slate-950 border border-slate-900 px-2 py-1.5 text-[9px] text-slate-500 flex items-center gap-1"
+                class="w-full rounded-xl bg-slate-950 border border-slate-900 px-3 py-2 text-sm text-slate-500 flex items-center gap-1"
               >
                 <span>/</span>
                 <span class="truncate">{{ business?.slug || 'auto-generated' }}</span>
@@ -48,10 +46,10 @@
             </div>
 
             <div class="space-y-1">
-              <label class="block text-[8px] text-slate-500">Timezone</label>
+              <label class="block cms-label">Timezone</label>
               <select
                 v-model="form.timezone"
-                class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+                class="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
               >
                 <option value="UTC">UTC</option>
                 <option value="Asia/Manila">Asia/Manila</option>
@@ -60,14 +58,14 @@
                 <option value="Europe/London">Europe/London</option>
                 <!-- Add more as needed later -->
               </select>
-              <p class="text-[7px] text-slate-500">
+              <p class="cms-caption-muted">
                 Used to calculate available slots and display times to customers.
               </p>
             </div>
           </div>
 
           <div class="flex justify-end gap-2 pt-1">
-            <BaseButton variant="outline" size="xs" :loading="savingProfile" @click="saveProfile">
+            <BaseButton variant="outline" size="sm" :loading="savingProfile" @click="saveProfile">
               Save changes
             </BaseButton>
           </div>
@@ -80,28 +78,26 @@
         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl px-4 py-3 space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div>
-              <h2 class="text-[11px] font-semibold text-slate-50">Opening hours</h2>
-              <p class="text-[9px] text-slate-500">
+              <h2 class="text-sm font-semibold text-slate-50">Opening hours</h2>
+              <p class="cms-caption">
                 Default weekly hours for this location. Staff availability can further restrict
                 slots.
               </p>
             </div>
-            <span
-              class="text-[8px] px-2 py-0.5 rounded-full border border-slate-800 text-slate-500"
-            >
+            <span class="cms-chip px-2 py-0.5 rounded-full border border-slate-800 text-slate-400">
               {{ form.timezone || 'UTC' }}
             </span>
           </div>
 
-          <div v-if="loadingHours" class="text-[9px] text-slate-500">Loading hours...</div>
+          <div v-if="loadingHours" class="cms-helper">Loading hours...</div>
 
           <BusinessHoursEditor v-else v-model="hoursDraft" />
 
           <div class="flex justify-between items-center pt-1">
-            <p class="text-[7px] text-slate-500">
+            <p class="cms-caption-muted">
               These hours power your public booking widget. Closed days won’t show any slots.
             </p>
-            <BaseButton variant="primary" size="xs" :loading="savingHours" @click="saveHours">
+            <BaseButton variant="primary" size="sm" :loading="savingHours" @click="saveHours">
               Save hours
             </BaseButton>
           </div>
@@ -113,16 +109,16 @@
         <!-- Meta / limits -->
         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl px-4 py-3 space-y-2">
           <div>
-            <h2 class="text-[11px] font-semibold text-slate-50">Plan & usage</h2>
-            <p class="text-[9px] text-slate-500">
+            <h2 class="text-sm font-semibold text-slate-50">Plan & usage</h2>
+            <p class="cms-caption">
               High-level info about this workspace. (Hook to real plan data later.)
             </p>
           </div>
-          <div class="flex flex-col gap-1 text-[8px] text-slate-400">
+          <div class="flex flex-col gap-1 cms-helper text-slate-400">
             <div class="flex items-center justify-between">
               <span>Status</span>
               <span
-                class="px-2 py-0.5 rounded-full bg-emerald-900/50 text-emerald-300 border border-emerald-700/70"
+                class="cms-chip px-2 py-0.5 rounded-full bg-emerald-900/50 text-emerald-300 border border-emerald-700/70"
               >
                 Active
               </span>
@@ -133,7 +129,7 @@
             </div>
             <div class="flex items-center justify-between">
               <span>Current business ID</span>
-              <span class="text-slate-500 truncate max-w-[120px]">
+              <span class="cms-caption-muted text-slate-500 truncate max-w-[160px]">
                 {{ business?.id || '—' }}
               </span>
             </div>
@@ -143,13 +139,13 @@
         <!-- Danger zone -->
         <div class="bg-slate-950/90 border border-rose-900/60 rounded-2xl px-4 py-3 space-y-2">
           <div>
-            <h2 class="text-[10px] font-semibold text-rose-300">Danger zone</h2>
-            <p class="text-[8px] text-slate-500">
+            <h2 class="text-sm font-semibold text-rose-300">Danger zone</h2>
+            <p class="cms-helper text-slate-400">
               Soft-delete this business. Existing data is preserved in the backend but hidden from
               normal use.
             </p>
           </div>
-          <BaseButton variant="danger" size="xs" :loading="deleting" @click="confirmDelete = true">
+          <BaseButton variant="danger" size="sm" :loading="deleting" @click="confirmDelete = true">
             Delete this business
           </BaseButton>
         </div>

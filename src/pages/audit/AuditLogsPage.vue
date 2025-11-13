@@ -4,18 +4,18 @@
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
       <div>
         <h1 class="text-xl font-semibold text-slate-50">Audit logs</h1>
-        <p class="text-[9px] text-slate-500">
+        <p class="cms-caption">
           See who changed what in your workspace. Filter and export for compliance or debugging.
         </p>
       </div>
       <div class="flex items-center gap-2">
         <BaseButton size="xs" variant="ghost" @click="reload">
-          <RefreshCcw class="w-3.5 h-3.5" />
-          <span class="text-[8px]">Refresh</span>
+          <RefreshCcw class="w-4 h-4" />
+          <span class="cms-helper">Refresh</span>
         </BaseButton>
         <BaseButton size="xs" variant="outline" :loading="exporting" @click="onExport('csv')">
-          <Download class="w-3.5 h-3.5" />
-          <span class="text-[8px]">Export CSV</span>
+          <Download class="w-4 h-4" />
+          <span class="cms-helper">Export CSV</span>
         </BaseButton>
       </div>
     </div>
@@ -25,51 +25,51 @@
       class="bg-slate-950/90 border border-slate-900 rounded-2xl px-3 py-3 flex flex-col md:flex-row gap-3 md:items-end"
     >
       <div class="flex-1 space-y-1">
-        <label class="block text-[8px] text-slate-500"> Entity (e.g. Service, Staff) </label>
+        <label class="cms-label">Entity (e.g. Service, Staff)</label>
         <input
           v-model="filters.entity"
           type="text"
           placeholder="All entities"
-          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[11px] text-slate-100 outline-none focus:border-brand-500/80"
         />
       </div>
 
       <div class="flex-1 space-y-1">
-        <label class="block text-[8px] text-slate-500"> Action contains </label>
+        <label class="cms-label">Action contains</label>
         <input
           v-model="filters.action"
           type="text"
           placeholder="e.g. service.create, staff.update"
-          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[11px] text-slate-100 outline-none focus:border-brand-500/80"
         />
       </div>
 
       <div class="space-y-1">
-        <label class="block text-[8px] text-slate-500"> From </label>
+        <label class="cms-label">From</label>
         <input
           v-model="filters.dateFrom"
           type="date"
-          class="w-32 rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+          class="w-32 rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[11px] text-slate-100 outline-none focus:border-brand-500/80"
         />
       </div>
 
       <div class="space-y-1">
-        <label class="block text-[8px] text-slate-500"> To </label>
+        <label class="cms-label">To</label>
         <input
           v-model="filters.dateTo"
           type="date"
-          class="w-32 rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+          class="w-32 rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[11px] text-slate-100 outline-none focus:border-brand-500/80"
         />
       </div>
 
       <div class="flex items-center gap-2">
         <BaseButton size="xs" variant="ghost" @click="resetFilters">
-          <XCircle class="w-3.5 h-3.5" />
-          <span class="text-[8px]">Clear</span>
+          <XCircle class="w-4 h-4" />
+          <span class="cms-helper">Clear</span>
         </BaseButton>
         <BaseButton size="xs" variant="primary" @click="applyFilters">
-          <Filter class="w-3.5 h-3.5" />
-          <span class="text-[8px]">Apply</span>
+          <Filter class="w-4 h-4" />
+          <span class="cms-helper">Apply</span>
         </BaseButton>
       </div>
     </div>
@@ -78,7 +78,7 @@
     <div class="bg-slate-950/90 border border-slate-900 rounded-2xl overflow-hidden">
       <!-- header -->
       <div
-        class="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.3fr)_minmax(0,1.3fr)_minmax(0,2fr)] gap-3 px-3 py-2 text-[8px] text-slate-500 border-b border-slate-900"
+        class="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.3fr)_minmax(0,1.3fr)_minmax(0,2fr)] gap-3 px-3 py-2 text-[11px] text-slate-500 border-b border-slate-900 uppercase tracking-wide"
       >
         <div>When</div>
         <div>Actor</div>
@@ -87,11 +87,11 @@
       </div>
 
       <!-- states -->
-      <div v-if="loading && rows.length === 0" class="px-3 py-4 text-[9px] text-slate-500">
+      <div v-if="loading && rows.length === 0" class="px-3 py-4 cms-helper">
         Loading audit logs...
       </div>
 
-      <div v-else-if="!loading && rows.length === 0" class="px-3 py-4 text-[9px] text-slate-500">
+      <div v-else-if="!loading && rows.length === 0" class="px-3 py-4 cms-caption">
         No audit events found for this business yet.
       </div>
 
@@ -100,32 +100,32 @@
         <div
           v-for="log in rows"
           :key="log.id"
-          class="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.3fr)_minmax(0,1.3fr)_minmax(0,2fr)] gap-3 px-3 py-2 text-[8px] text-slate-200 hover:bg-slate-950"
+          class="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.3fr)_minmax(0,1.3fr)_minmax(0,2fr)] gap-3 px-3 py-2 text-sm text-slate-200 hover:bg-slate-950"
         >
           <!-- When -->
           <div class="flex flex-col">
             <span class="text-slate-100">
               {{ formatDate(log.createdAt) }}
             </span>
-            <span class="text-slate-500 text-[7px]">
+            <span class="text-xs text-slate-500">
               {{ formatTime(log.createdAt) }}
             </span>
           </div>
 
           <!-- Actor -->
           <div class="flex flex-col">
-            <span class="text-[8px] text-slate-200">
+            <span class="text-sm text-slate-200">
               {{ log.actorUserId || 'System' }}
             </span>
-            <span class="text-[7px] text-slate-500"> User ID </span>
+            <span class="text-xs text-slate-500">User ID</span>
           </div>
 
           <!-- Action -->
           <div class="flex flex-col">
-            <span class="text-[8px] text-brand-400">
+            <span class="cms-caption text-brand-400">
               {{ log.action }}
             </span>
-            <span class="text-[7px] text-slate-500">
+            <span class="text-xs text-slate-500">
               {{ log.entity || '—' }} <span v-if="log.entityId">· {{ shortId(log.entityId) }}</span>
             </span>
           </div>
@@ -139,19 +139,19 @@
               <span
                 v-for="(value, key) in limitedMeta(log.meta)"
                 :key="key"
-                class="px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-800 text-[7px] text-slate-300 max-w-[9rem] truncate"
+                class="px-1.5 py-0.5 rounded-full bg-slate-950 border border-slate-800 text-[11px] text-slate-300 max-w-[9rem] truncate"
               >
                 <span class="text-slate-500 mr-0.5">{{ key }}:</span>
                 <span>{{ String(value) }}</span>
               </span>
               <span
                 v-if="Object.keys(log.meta).length > metaPreviewLimit"
-                class="text-[7px] text-slate-500"
+                class="text-[11px] text-slate-500"
               >
                 +{{ Object.keys(log.meta).length - metaPreviewLimit }} more
               </span>
             </div>
-            <span v-else class="text-[7px] text-slate-600"> No extra details </span>
+            <span v-else class="text-[9px] text-slate-600">No extra details</span>
           </div>
         </div>
       </div>

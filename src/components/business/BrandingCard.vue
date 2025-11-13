@@ -1,64 +1,61 @@
 <template>
-  <!-- Branding card -->
   <div class="bg-slate-950/80 border border-slate-800 rounded-2xl px-4 py-3 space-y-3">
     <div>
-      <h2 class="text-[11px] font-semibold text-slate-50">Branding</h2>
-      <p class="text-[9px] text-slate-500">
-        Logo, primary color, and tagline displayed on your booking page.
-      </p>
+      <h2 class="text-sm font-semibold text-slate-50">Branding</h2>
+      <p class="cms-caption">Logo, primary color, and tagline displayed on your booking page.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[10px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
       <!-- Logo URL -->
       <div class="space-y-1 md:col-span-2">
-        <label class="block text-[8px] text-slate-500">Logo URL</label>
+        <label class="block cms-label">Logo URL</label>
         <input
           v-model="form.logoUrl"
           type="url"
-          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           placeholder="https://…/logo.png"
         />
         <div v-if="form.logoUrl" class="mt-2 flex items-center gap-2">
-          <img :src="form.logoUrl" alt="Logo preview" class="h-8 w-auto rounded" />
-          <span class="text-[8px] text-slate-500">Preview</span>
+          <img :src="form.logoUrl" alt="Logo preview" class="h-9 w-auto rounded" />
+          <span class="cms-helper text-slate-500">Preview</span>
         </div>
       </div>
 
       <!-- Primary color -->
       <div class="space-y-1">
-        <label class="block text-[8px] text-slate-500">Primary color</label>
+        <label class="block cms-label">Primary color</label>
         <div class="flex items-center gap-2">
           <input
             v-model="form.primaryColor"
             type="text"
-            class="flex-1 rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+            class="flex-1 rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
             placeholder="#3b82f6"
           />
           <input
             v-model="form.primaryColor"
             type="color"
-            class="h-7 w-7 rounded border border-slate-800"
+            class="h-8 w-8 rounded border border-slate-800"
           />
         </div>
-        <p class="text-[7px] text-slate-500">Use a hex color like #3b82f6.</p>
+        <p class="cms-caption-muted">Use a hex color like #3b82f6.</p>
       </div>
 
       <!-- Tagline -->
       <div class="space-y-1">
-        <label class="block text-[8px] text-slate-500">Tagline</label>
+        <label class="block cms-label">Tagline</label>
         <input
           v-model="form.tagline"
           type="text"
           maxlength="160"
-          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+          class="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           placeholder="Book your appointment in seconds."
         />
-        <p class="text-[7px] text-slate-500">Up to 160 characters.</p>
+        <p class="cms-caption-muted">Up to 160 characters.</p>
       </div>
     </div>
 
     <div class="flex justify-end gap-2 pt-1">
-      <BaseButton variant="outline" size="xs" :loading="saving" @click="emit('save')">
+      <BaseButton variant="outline" size="sm" :loading="saving" @click="emit('save')">
         Save branding
       </BaseButton>
     </div>

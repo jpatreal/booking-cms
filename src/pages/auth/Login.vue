@@ -8,34 +8,29 @@
           class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-900/80 border border-slate-800"
         >
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <span class="text-[8px] text-slate-400">Booking CMS</span>
+          <span class="cms-chip text-slate-300">Booking CMS</span>
         </div>
-        <h1 class="text-lg font-semibold text-slate-50">Sign in to your workspace</h1>
-        <p class="text-[9px] text-slate-400">
-          Access your bookings, team, and services in one place.
-        </p>
+        <h1 class="text-xl font-semibold text-slate-50">Sign in to your workspace</h1>
+        <p class="cms-caption">Access your bookings, team, and services in one place.</p>
       </div>
 
       <form class="space-y-3" @submit.prevent="onSubmit">
         <div class="space-y-1">
-          <label class="block text-[8px] text-slate-500"> Email </label>
+          <label class="block cms-label"> Email </label>
           <input
             v-model="email"
             type="email"
             required
             autocomplete="email"
             placeholder="you@example.com"
-            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           />
         </div>
 
         <div class="space-y-1">
           <div class="flex items-center justify-between">
-            <label class="block text-[8px] text-slate-500"> Password </label>
-            <RouterLink
-              :to="{ name: 'request-reset' }"
-              class="text-[8px] text-slate-500 hover:text-brand-400"
-            >
+            <label class="block cms-label"> Password </label>
+            <RouterLink :to="{ name: 'request-reset' }" class="cms-label hover:text-brand-400">
               Forgot password?
             </RouterLink>
           </div>
@@ -45,11 +40,11 @@
             required
             autocomplete="current-password"
             placeholder="••••••••"
-            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           />
         </div>
 
-        <p v-if="error" class="text-[8px] text-rose-400">
+        <p v-if="error" class="text-sm text-rose-400">
           {{ error }}
         </p>
 
@@ -66,13 +61,13 @@
       </form>
 
       <div class="flex flex-col gap-1.5 text-center">
-        <p class="text-[8px] text-slate-500">
+        <p class="cms-helper">
           Have an invite or registration key?
           <RouterLink :to="{ name: 'register' }" class="text-brand-400 hover:text-slate-300 ml-1">
             Create an account
           </RouterLink>
         </p>
-        <p class="text-[7px] text-slate-500">
+        <p class="cms-caption-muted">
           By signing in, you agree to the terms provided for your workspace.
         </p>
       </div>

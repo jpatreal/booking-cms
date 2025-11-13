@@ -1,4 +1,3 @@
-<!-- src/components/business/BusinessCreateModal.vue -->
 <template>
   <teleport to="body">
     <div
@@ -8,14 +7,14 @@
     >
       <div class="w-full max-w-md bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3">
         <header class="space-y-1">
-          <h2 class="text-sm font-semibold text-slate-50">Create a new business</h2>
-          <p class="text-[9px] text-slate-500">
+          <h2 class="text-lg font-semibold text-slate-50">Create a new business</h2>
+          <p class="cms-caption">
             Use this for another location or brand. Each account can create up to
             <span class="font-semibold text-slate-200">{{ maxBusinesses }}</span>
             businesses.
           </p>
-          <p v-if="isAtLimit" class="text-[8px] text-amber-400 flex items-center gap-1">
-            <span class="w-1 h-1 rounded-full bg-amber-400"></span>
+          <p v-if="isAtLimit" class="cms-helper text-amber-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             You’ve reached the maximum allowed businesses. Delete one to create another.
           </p>
         </header>
@@ -23,11 +22,11 @@
         <form class="space-y-3" @submit.prevent="submit" novalidate>
           <!-- Name -->
           <div class="space-y-1">
-            <label class="block text-[8px] text-slate-500">Business name</label>
+            <label class="block cms-label">Business name</label>
             <input
               v-model="name"
               type="text"
-              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
               placeholder="e.g. Spidey Clinic - Downtown"
               :disabled="isAtLimit || loading"
             />
@@ -35,10 +34,10 @@
 
           <!-- Timezone -->
           <div class="space-y-1">
-            <label class="block text-[8px] text-slate-500">Timezone</label>
+            <label class="block cms-label">Timezone</label>
             <select
               v-model="timezone"
-              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-2 py-1.5 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+              class="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
               :disabled="isAtLimit || loading"
             >
               <option value="UTC">UTC</option>
@@ -47,7 +46,7 @@
               <option value="America/New_York">America/New_York</option>
               <option value="Europe/London">Europe/London</option>
             </select>
-            <p class="text-[7px] text-slate-500">
+            <p class="cms-caption-muted">
               This timezone will apply to opening hours and booking times.
             </p>
           </div>
@@ -55,10 +54,8 @@
           <!-- Hours (optional at create) -->
           <div class="space-y-1.5">
             <div class="flex items-center justify-between gap-2">
-              <label class="block text-[8px] text-slate-500"> Opening hours (optional) </label>
-              <span class="text-[7px] text-slate-600">
-                You can change this later in settings.
-              </span>
+              <label class="block cms-label"> Opening hours (optional) </label>
+              <span class="cms-caption-muted"> You can change this later in settings. </span>
             </div>
             <BusinessHoursEditor v-model="hours" />
           </div>
@@ -67,7 +64,7 @@
             <BaseButton
               type="button"
               variant="ghost"
-              size="xs"
+              size="sm"
               :disabled="loading"
               @click="onClose"
             >
@@ -76,7 +73,7 @@
             <BaseButton
               type="submit"
               variant="primary"
-              size="xs"
+              size="sm"
               :loading="loading"
               :disabled="isAtLimit"
             >

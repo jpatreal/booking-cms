@@ -1,6 +1,6 @@
 <template>
   <span
-    class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[7px] border"
+    class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] border"
     :class="classes"
   >
     {{ label }}

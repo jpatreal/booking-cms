@@ -5,11 +5,11 @@
       :key="day.value"
       class="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800"
     >
-      <div class="w-10 text-[9px] font-medium text-slate-100">
+      <div class="w-10 text-sm font-medium text-slate-100">
         {{ day.label }}
       </div>
 
-      <label class="inline-flex items-center gap-1 text-[8px] text-slate-500 cursor-pointer">
+      <label class="inline-flex items-center gap-1 text-xs text-slate-500 cursor-pointer">
         <input type="checkbox" v-model="day.open" class="w-3 h-3 accent-brand-500" />
         <span>Open</span>
       </label>
@@ -18,14 +18,14 @@
         v-model="day.start"
         type="time"
         :disabled="!day.open"
-        class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none disabled:opacity-40 disabled:cursor-not-allowed focus:border-brand-500/80"
+        class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none disabled:opacity-40 disabled:cursor-not-allowed focus:border-brand-500/80"
       />
-      <span class="text-[9px] text-slate-500">-</span>
+      <span class="text-sm text-slate-500">-</span>
       <input
         v-model="day.end"
         type="time"
         :disabled="!day.open"
-        class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none disabled:opacity-40 disabled:cursor-not-allowed focus:border-brand-500/80"
+        class="flex-1 rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none disabled:opacity-40 disabled:cursor-not-allowed focus:border-brand-500/80"
       />
 
       <button

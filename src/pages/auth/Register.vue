@@ -1,4 +1,3 @@
-<!-- src/pages/auth/Register.vue -->
 <template>
   <div class="min-h-screen bg-slate-950 flex items-center justify-center px-3">
     <div
@@ -6,13 +5,13 @@
     >
       <!-- Header -->
       <div class="space-y-1">
-        <h1 class="text-lg font-semibold text-slate-50">Create your account</h1>
-        <p v-if="isInvite" class="text-[9px] text-slate-400">
+        <h1 class="text-xl font-semibold text-slate-50">Create your account</h1>
+        <p v-if="isInvite" class="cms-caption">
           You’re joining
           <span class="font-medium text-slate-200">a business via invite.</span>
           Use the same email the invite was sent to.
         </p>
-        <p v-else class="text-[9px] text-slate-400">
+        <p v-else class="cms-caption">
           Use your registration key to create your first business workspace.
         </p>
       </div>
@@ -21,52 +20,52 @@
       <form class="space-y-3" @submit.prevent="onSubmit">
         <!-- Email -->
         <div class="space-y-1">
-          <label class="block text-[8px] text-slate-500">Email</label>
+          <label class="block cms-label">Email</label>
           <input
             v-model="email"
             type="email"
             required
             placeholder="you@example.com"
-            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           />
         </div>
 
         <!-- Password -->
         <div class="space-y-1">
-          <label class="block text-[8px] text-slate-500">Password</label>
+          <label class="block cms-label">Password</label>
           <input
             v-model="password"
             type="password"
             required
             minlength="8"
             placeholder="At least 8 characters"
-            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           />
         </div>
 
         <!-- Owner signup fields -->
         <template v-if="!isInvite">
           <div class="space-y-1">
-            <label class="block text-[8px] text-slate-500"> Business name </label>
+            <label class="block cms-label"> Business name </label>
             <input
               v-model="businessName"
               type="text"
               required
               placeholder="e.g. Spidey Clinic"
-              class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+              class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
             />
           </div>
 
           <div class="space-y-1">
-            <label class="block text-[8px] text-slate-500"> Registration key </label>
+            <label class="block cms-label"> Registration key </label>
             <input
               v-model="registrationKey"
               type="text"
               required
               placeholder="Paste the key provided to you"
-              class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+              class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
             />
-            <p class="text-[7px] text-slate-500">
+            <p class="cms-caption-muted">
               This keeps access limited while you’re in beta or invite-only mode.
             </p>
           </div>
@@ -75,7 +74,7 @@
         <!-- Invite token note -->
         <template v-else>
           <p
-            class="text-[8px] text-slate-500 bg-slate-950/80 border border-slate-900 rounded-2xl px-3 py-2"
+            class="cms-helper bg-slate-950/80 border border-slate-900 rounded-2xl px-3 py-2 text-left"
           >
             You’re signing up from an invite. Once registered, you’ll be added to the business
             automatically.
@@ -92,10 +91,7 @@
             Create account
           </BaseButton>
 
-          <RouterLink
-            :to="{ name: 'login' }"
-            class="text-[8px] text-slate-500 hover:text-slate-300 text-center"
-          >
+          <RouterLink :to="{ name: 'login' }" class="cms-helper hover:text-slate-300 text-center">
             Already have an account? <span class="text-brand-400">Log in</span>
           </RouterLink>
         </div>

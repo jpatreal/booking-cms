@@ -10,41 +10,39 @@
       >
         <header class="flex items-center justify-between gap-2">
           <div>
-            <h2 class="text-sm font-semibold text-slate-50">Time off for {{ staff.name }}</h2>
-            <p class="text-[10px] text-slate-500">
-              Block dates when this staff is unavailable for bookings.
-            </p>
+            <h2 class="text-base font-semibold text-slate-50">Time off for {{ staff.name }}</h2>
+            <p class="cms-caption">Block dates when this staff is unavailable for bookings.</p>
           </div>
-          <button class="text-slate-500 hover:text-slate-200 text-xs" @click="emitClose">✕</button>
+          <button class="text-slate-500 hover:text-slate-200 text-sm" @click="emitClose">✕</button>
         </header>
 
         <!-- Add form -->
-        <div class="space-y-1 border border-slate-800 rounded-2xl p-3">
-          <div class="text-[9px] text-slate-400 font-medium">Add time off</div>
-          <div class="space-y-1.5">
+        <div class="space-y-2 border border-slate-800 rounded-2xl p-3">
+          <div class="text-sm text-slate-400 font-medium">Add time off</div>
+          <div class="space-y-1.5 text-sm">
             <div class="flex flex-col gap-0.5">
-              <label class="text-[8px] text-slate-500">Start</label>
+              <label class="text-xs text-slate-500">Start</label>
               <input
                 v-model="form.start"
                 type="datetime-local"
-                class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+                class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none focus:border-brand-500/80"
               />
             </div>
             <div class="flex flex-col gap-0.5">
-              <label class="text-[8px] text-slate-500">End</label>
+              <label class="text-xs text-slate-500">End</label>
               <input
                 v-model="form.end"
                 type="datetime-local"
-                class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+                class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none focus:border-brand-500/80"
               />
             </div>
             <div class="flex flex-col gap-0.5">
-              <label class="text-[8px] text-slate-500">Reason</label>
+              <label class="text-xs text-slate-500">Reason</label>
               <input
                 v-model="form.reason"
                 type="text"
                 placeholder="Optional, internal only"
-                class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none placeholder:text-slate-600"
+                class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none placeholder:text-slate-600"
               />
             </div>
           </div>
@@ -54,16 +52,16 @@
         </div>
 
         <!-- List -->
-        <div class="flex-1 overflow-y-auto space-y-2">
-          <div v-if="loading" class="text-xs text-slate-500">Loading time off...</div>
-          <div v-else-if="items.length === 0" class="text-xs text-slate-500">
+        <div class="flex-1 overflow-y-auto space-y-2 mt-1">
+          <div v-if="loading" class="text-sm text-slate-500">Loading time off...</div>
+          <div v-else-if="items.length === 0" class="text-sm text-slate-500">
             No time off set yet.
           </div>
           <div
             v-else
             v-for="t in items"
             :key="t.id"
-            class="flex items-start justify-between gap-2 px-3 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-[9px]"
+            class="flex items-start justify-between gap-2 px-3 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-sm"
           >
             <div class="flex-1">
               <div class="text-slate-100">{{ fmt(t.startUtc) }} → {{ fmt(t.endUtc) }}</div>
@@ -71,13 +69,11 @@
                 {{ t.reason || 'No reason provided' }}
               </div>
             </div>
-            <button class="text-slate-500 hover:text-rose-400 text-[10px]" @click="remove(t)">
-              ✕
-            </button>
+            <button class="text-slate-500 hover:text-rose-400 text-sm" @click="remove(t)">✕</button>
           </div>
         </div>
 
-        <footer class="flex justify-end pt-1 border-t border-slate-900">
+        <footer class="flex justify-end pt-2 border-t border-slate-900">
           <BaseButton variant="ghost" @click="emitClose"> Close </BaseButton>
         </footer>
       </div>
@@ -101,7 +97,7 @@ import { fromZonedTime } from 'date-fns-tz';
 const props = defineProps<{
   open: boolean;
   staff: Staff | null;
-  businessTz: string; // <-- pass e.g. bookingConfig.business.timezone
+  businessTz: string;
 }>();
 
 const emit = defineEmits<{ (e: 'close'): void; (e: 'updated'): void }>();
@@ -167,7 +163,7 @@ async function create() {
   }
 
   // Frontend validations mirroring backend
-  const tz = props.businessTz || 'UTC';
+  const tz = props.businessTz || 'Asia/Manila';
   if (!sameLocalDay(form.value.start, form.value.end, tz)) {
     toasts.error('Time off cannot cross days. Create separate entries per day.');
     return;
@@ -212,7 +208,7 @@ async function remove(t: StaffTimeOff) {
 }
 
 function fmt(iso: string): string {
-  const tz = props.businessTz || 'UTC';
+  const tz = props.businessTz || 'Asia/Manila';
   return new Intl.DateTimeFormat('en-PH', {
     month: 'short',
     day: 'numeric',

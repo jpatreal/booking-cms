@@ -1,25 +1,24 @@
-<!-- src/pages/auth/RequestReset.vue -->
 <template>
   <div class="min-h-screen bg-slate-950 flex items-center justify-center px-3">
     <div
       class="w-full max-w-md bg-slate-950/90 border border-slate-800/80 rounded-3xl p-5 shadow-xl space-y-4"
     >
       <div class="space-y-1">
-        <h1 class="text-lg font-semibold text-slate-50">Reset your password</h1>
-        <p class="text-[9px] text-slate-400">
+        <h1 class="text-xl font-semibold text-slate-50">Reset your password</h1>
+        <p class="cms-caption">
           Enter your email and we’ll send you a secure reset link if an account exists.
         </p>
       </div>
 
       <form class="space-y-3" @submit.prevent="onSubmit">
         <div class="space-y-1">
-          <label class="block text-[8px] text-slate-500">Email</label>
+          <label class="block cms-label">Email</label>
           <input
             v-model="email"
             type="email"
             required
             placeholder="you@example.com"
-            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-[10px] text-slate-100 outline-none focus:border-brand-500/80"
+            class="w-full rounded-2xl bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500/80"
           />
         </div>
 
@@ -33,10 +32,7 @@
             Send reset link
           </BaseButton>
 
-          <RouterLink
-            :to="{ name: 'login' }"
-            class="text-[8px] text-slate-500 hover:text-slate-300 text-center"
-          >
+          <RouterLink :to="{ name: 'login' }" class="cms-helper hover:text-slate-300 text-center">
             Back to login
           </RouterLink>
         </div>

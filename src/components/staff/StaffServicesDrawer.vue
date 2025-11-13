@@ -10,18 +10,18 @@
       >
         <header class="flex items-center justify-between gap-2">
           <div>
-            <h2 class="text-sm font-semibold text-slate-50">Services for {{ staff.name }}</h2>
-            <p class="text-[10px] text-slate-500">
+            <h2 class="text-base font-semibold text-slate-50">Services for {{ staff.name }}</h2>
+            <p class="cms-caption">
               Choose which services this staff can perform and override pricing if needed.
             </p>
           </div>
-          <button class="text-slate-500 hover:text-slate-200 text-xs" @click="emitClose">✕</button>
+          <button class="text-slate-500 hover:text-slate-200 text-sm" @click="emitClose">✕</button>
         </header>
 
         <div class="flex-1 overflow-y-auto space-y-2">
-          <div v-if="loading" class="text-xs text-slate-500">Loading services...</div>
+          <div v-if="loading" class="text-sm text-slate-500">Loading services...</div>
 
-          <div v-else-if="rows.length === 0" class="text-xs text-slate-500">
+          <div v-else-if="rows.length === 0" class="text-sm text-slate-500">
             No services found. Create services first.
           </div>
 
@@ -29,23 +29,23 @@
             v-else
             v-for="row in rows"
             :key="row.serviceId"
-            class="border border-slate-800 rounded-xl px-3 py-2.5 flex flex-col gap-1 bg-slate-950/80"
+            class="border border-slate-800 rounded-xl px-3 py-2.5 flex flex-col gap-1 bg-slate-950/80 text-sm"
           >
             <div class="flex items-center justify-between gap-2">
               <label class="flex items-center gap-2">
-                <input type="checkbox" v-model="row.assigned" class="w-3 h-3 accent-brand-500" />
+                <input type="checkbox" v-model="row.assigned" class="w-4 h-4 accent-brand-500" />
                 <div class="flex flex-col">
-                  <span class="text-xs text-slate-100 font-medium">
+                  <span class="text-sm text-slate-100 font-medium">
                     {{ row.name }}
                   </span>
-                  <span class="text-[9px] text-slate-500">
+                  <span class="text-xs text-slate-500">
                     Base: ₱{{ row.basePrice }} • {{ row.baseDuration }} min
                   </span>
                 </div>
               </label>
               <span
                 v-if="row.assigned"
-                class="text-[8px] px-2 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-700/70"
+                class="text-xs px-2 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-700/70"
               >
                 Assigned
               </span>
@@ -53,25 +53,23 @@
 
             <div v-if="row.assigned" class="grid grid-cols-2 gap-2 mt-1">
               <div>
-                <label class="block text-[8px] text-slate-500 mb-0.5"> Price override (₱) </label>
+                <label class="block text-xs text-slate-500 mb-0.5"> Price override (₱) </label>
                 <input
                   v-model="row.priceOverrideInput"
                   type="number"
                   min="0"
                   step="0.01"
-                  class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+                  class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none focus:border-brand-500/80"
                 />
               </div>
               <div>
-                <label class="block text-[8px] text-slate-500 mb-0.5">
-                  Duration override (min)
-                </label>
+                <label class="block text-xs text-slate-500 mb-0.5"> Duration override (min) </label>
                 <input
                   v-model="row.durationOverrideInput"
                   type="number"
                   min="1"
                   step="1"
-                  class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-[9px] text-slate-100 outline-none focus:border-brand-500/80"
+                  class="w-full rounded-lg bg-slate-950 border border-slate-800 px-2 py-1 text-sm text-slate-100 outline-none focus:border-brand-500/80"
                 />
               </div>
             </div>

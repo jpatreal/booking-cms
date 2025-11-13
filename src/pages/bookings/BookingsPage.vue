@@ -4,7 +4,7 @@
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
       <div>
         <h1 class="text-xl font-semibold text-slate-50">Bookings</h1>
-        <p class="text-[10px] text-slate-500">
+        <p class="cms-caption">
           See all appointments, manage status, and keep your day under control.
         </p>
       </div>
@@ -12,7 +12,7 @@
         <BaseButton
           size="sm"
           variant="outline"
-          class="text-[10px] hidden sm:inline-flex"
+          class="hidden sm:inline-flex text-xs"
           @click="setTodayRange"
         >
           Today
@@ -20,14 +20,14 @@
         <BaseButton
           size="sm"
           variant="outline"
-          class="text-[10px] hidden sm:inline-flex"
+          class="hidden sm:inline-flex text-xs"
           @click="setNext7Days"
         >
           Next 7 days
         </BaseButton>
         <BaseButton
           size="sm"
-          class="hidden sm:inline-flex text-[10px]"
+          class="hidden sm:inline-flex text-xs"
           :variant="viewMode === 'list' ? 'primary' : 'ghost'"
           @click="viewMode = 'list'"
         >
@@ -36,7 +36,7 @@
         </BaseButton>
         <BaseButton
           size="sm"
-          class="hidden sm:inline-flex text-[10px]"
+          class="hidden sm:inline-flex text-xs"
           :variant="viewMode === 'calendar' ? 'primary' : 'ghost'"
           @click="viewMode = 'calendar'"
         >
@@ -64,10 +64,10 @@
       </div>
 
       <!-- Status -->
-      <div class="flex items-center gap-2 text-[9px] text-slate-400">
+      <div class="flex items-center gap-2 cms-caption">
         <select
           v-model="filters.status"
-          class="bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-[9px] text-slate-200 outline-none"
+          class="bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-xs text-slate-200 outline-none"
           @change="onFilterStatus"
         >
           <option value="">All statuses</option>
@@ -81,7 +81,7 @@
         <!-- Staff filter -->
         <select
           v-model="filters.staffId"
-          class="bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-[9px] text-slate-200 outline-none max-w-[130px]"
+          class="bg-slate-950 border border-slate-800 rounded-xl px-2 py-1 text-xs text-slate-200 outline-none max-w-[130px]"
           @change="reload"
         >
           <option value="">All staff</option>
@@ -92,7 +92,7 @@
       </div>
 
       <!-- Date range quick -->
-      <div class="flex items-center gap-1 text-[8px] text-slate-500">
+      <div class="flex items-center gap-1 text-xs text-slate-500">
         <span class="hidden md:inline">Date:</span>
         <BaseButton size="xs" variant="ghost" @click="setTodayRange"> Today </BaseButton>
         <BaseButton size="xs" variant="ghost" @click="setNext7Days"> 7d </BaseButton>
@@ -100,7 +100,7 @@
       </div>
 
       <!-- View toggle, apply/reset -->
-      <div class="flex items-center gap-2 text-[9px]">
+      <div class="flex items-center gap-2 text-xs">
         <BaseButton size="xs" variant="ghost" @click="resetFilters">
           <RefreshCcw class="w-3 h-3" />
           Reset
@@ -134,7 +134,7 @@
       <template v-if="viewMode === 'list'">
         <!-- header row -->
         <div
-          class="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.9fr)] gap-3 px-4 py-2 text-[8px] text-slate-500 border-b border-slate-800"
+          class="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.9fr)] gap-3 px-4 py-2 text-xs text-slate-500 border-b border-slate-800"
         >
           <div>When & service</div>
           <div>Customer</div>
@@ -143,9 +143,9 @@
           <div class="text-right">Actions</div>
         </div>
 
-        <div v-if="loading" class="px-4 py-6 text-[9px] text-slate-500">Loading bookings...</div>
+        <div v-if="loading" class="px-4 py-6 cms-caption">Loading bookings...</div>
 
-        <div v-else-if="bookings.length === 0" class="px-4 py-6 text-[9px] text-slate-500">
+        <div v-else-if="bookings.length === 0" class="px-4 py-6 cms-caption">
           No bookings in this range yet. Try adjusting filters or create one manually.
         </div>
 
@@ -153,16 +153,16 @@
           <div
             v-for="b in bookings"
             :key="b.id"
-            class="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.9fr)] gap-3 px-4 py-2.5 items-center text-[9px] hover:bg-slate-900/80"
+            class="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.9fr)] gap-3 px-4 py-2.5 items-center text-sm hover:bg-slate-900/80"
           >
             <!-- When & service -->
             <div class="flex flex-col">
               <div class="text-slate-100">
                 {{ formatDateTimeRange(b.startUtc, b.endUtc) }}
               </div>
-              <div class="text-[8px] text-slate-400">
+              <div class="text-xs text-slate-400">
                 {{ b.serviceSnapshotJson?.name || 'Service' }}
-                <span v-if="b.channelRef" class="ml-1 text-[7px] text-slate-500">
+                <span v-if="b.channelRef" class="ml-1 text-xs text-slate-500">
                   • {{ b.channelRef }}
                 </span>
               </div>
@@ -173,16 +173,16 @@
               <div class="text-slate-100 truncate">
                 {{ b.customerName || 'Walk-in' }}
               </div>
-              <div v-if="b.customerEmail" class="text-[7px] text-slate-500 truncate">
+              <div v-if="b.customerEmail" class="text-xs text-slate-500 truncate">
                 {{ b.customerEmail }}
               </div>
-              <div v-if="b.notes" class="text-[7px] text-slate-600 line-clamp-1">
+              <div v-if="b.notes" class="text-xs text-slate-600 line-clamp-1">
                 {{ b.notes }}
               </div>
             </div>
 
             <!-- Staff -->
-            <div class="text-slate-300 text-[8px]">
+            <div class="text-slate-300 text-sm">
               <span :class="staffMap[b.staffId] ? '' : 'text-slate-500'">
                 {{ staffMap[b.staffId]?.name || 'Unassigned' }}
               </span>
@@ -193,7 +193,7 @@
               <BookingStatusBadge :status="b.status" />
               <span
                 v-if="b.paymentStatus"
-                class="inline-flex w-fit px-1.5 py-0.5 rounded-full text-[7px]"
+                class="inline-flex w-fit px-1.5 py-0.5 rounded-full text-xs"
                 :class="paymentClass(b.paymentStatus)"
               >
                 {{ b.paymentStatus }}
@@ -253,7 +253,7 @@
       <!-- Calendar view -->
       <template v-else>
         <div class="px-4 py-3 space-y-2">
-          <div class="flex items-center justify-between text-[9px] text-slate-400 mb-1">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
             <div class="flex items-center gap-1.5">
               <BaseButton size="xs" variant="ghost" @click="prevCalendarRange"> ‹ </BaseButton>
               <BaseButton size="xs" variant="ghost" @click="nextCalendarRange"> › </BaseButton>
@@ -261,17 +261,17 @@
                 {{ calendarLabel }}
               </span>
             </div>
-            <div class="flex items-center gap-1">
+            <div class="flex items-center gap-1 text-xs">
               <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-              <span class="text-[8px] text-slate-500">Pending</span>
+              <span class="text-slate-500">Pending</span>
               <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span class="text-[8px] text-slate-500">Confirmed</span>
+              <span class="text-slate-500">Confirmed</span>
               <span class="w-2 h-2 rounded-full bg-slate-500"></span>
-              <span class="text-[8px] text-slate-500">Other</span>
+              <span class="text-slate-500">Other</span>
             </div>
           </div>
 
-          <div class="grid grid-cols-7 gap-1.5 text-[8px]">
+          <div class="grid grid-cols-7 gap-1.5 text-xs">
             <div
               v-for="day in calendarDays"
               :key="day.key"
@@ -281,14 +281,14 @@
                 <span class="text-slate-400">
                   {{ day.label }}
                 </span>
-                <span class="text-[8px] text-slate-500"> {{ day.count }} appt </span>
+                <span class="text-xs text-slate-500"> {{ day.count }} appt </span>
               </div>
 
               <div class="space-y-0.5 overflow-y-auto max-h-40 pr-0.5">
                 <button
                   v-for="b in day.bookings"
                   :key="b.id"
-                  class="w-full text-left px-1.5 py-0.5 rounded-lg border text-[7px] flex flex-col gap-0.5 hover:border-brand-500/70 hover:bg-slate-900/90 transition"
+                  class="w-full text-left px-1.5 py-0.5 rounded-lg border text-xs flex flex-col gap-0.5 hover:border-brand-500/70 hover:bg-slate-900/90 transition"
                   :class="calendarBookingClass(b)"
                   @click="openReschedule(b)"
                 >
@@ -298,7 +298,7 @@
                       {{ b.serviceSnapshotJson?.name || 'Service' }}
                     </span>
                   </div>
-                  <div class="flex items-center justify-between gap-1 text-[7px]">
+                  <div class="flex items-center justify-between gap-1 text-xs">
                     <span class="truncate">
                       {{ b.customerName }}
                     </span>
@@ -324,11 +324,11 @@
       <form class="space-y-3" @submit.prevent="saveBooking">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[8px] text-slate-400 mb-1">Service</label>
+            <label class="block text-xs text-slate-400 mb-1">Service</label>
             <select
               v-model="form.serviceId"
               required
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
             >
               <option value="" disabled>Select service</option>
               <option v-for="s in serviceOptions" :key="s.id" :value="s.id">
@@ -337,11 +337,11 @@
             </select>
           </div>
           <div>
-            <label class="block text-[8px] text-slate-400 mb-1">Staff</label>
+            <label class="block text-xs text-slate-400 mb-1">Staff</label>
             <select
               v-model="form.staffId"
               required
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
             >
               <option value="" disabled>Select staff</option>
               <option v-for="s in staffOptions" :key="s.id" :value="s.id">
@@ -353,31 +353,31 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[8px] text-slate-400 mb-1">Date</label>
+            <label class="block text-xs text-slate-400 mb-1">Date</label>
             <input
               v-model="form.date"
               type="date"
               required
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
             />
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="block text-[8px] text-slate-400 mb-1">Start time</label>
+              <label class="block text-xs text-slate-400 mb-1">Start time</label>
               <input
                 v-model="form.startTime"
                 type="time"
                 required
-                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
               />
             </div>
             <div>
-              <label class="block text-[8px] text-slate-400 mb-1">End time</label>
+              <label class="block text-xs text-slate-400 mb-1">End time</label>
               <input
                 v-model="form.endTime"
                 type="time"
                 required
-                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
               />
             </div>
           </div>
@@ -421,7 +421,7 @@
       @close="closeCancel"
     >
       <div class="space-y-3">
-        <p class="text-[9px] text-slate-400">
+        <p class="text-sm text-slate-400">
           Booking:
           <span class="text-slate-200">
             {{ activeBooking && formatDateTimeRange(activeBooking.startUtc, activeBooking.endUtc) }}
@@ -450,7 +450,7 @@
       @close="closeReschedule"
     >
       <div v-if="activeBooking" class="space-y-3">
-        <p class="text-[9px] text-slate-400">
+        <p class="text-sm text-slate-400">
           {{ activeBooking.customerName }} —
           {{ activeBooking.serviceSnapshotJson?.name }}
           <br />
@@ -461,31 +461,31 @@
         </p>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[8px] text-slate-400 mb-1">New date</label>
+            <label class="block text-xs text-slate-400 mb-1">New date</label>
             <input
               v-model="resched.date"
               type="date"
               required
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
             />
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="block text-[8px] text-slate-400 mb-1">Start</label>
+              <label class="block text-xs text-slate-400 mb-1">Start</label>
               <input
                 v-model="resched.startTime"
                 type="time"
                 required
-                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
               />
             </div>
             <div>
-              <label class="block text-[8px] text-slate-400 mb-1">End</label>
+              <label class="block text-xs text-slate-400 mb-1">End</label>
               <input
                 v-model="resched.endTime"
                 type="time"
                 required
-                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-[9px] text-slate-100 outline-none"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-sm text-slate-100 outline-none"
               />
             </div>
           </div>

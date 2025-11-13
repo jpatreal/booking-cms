@@ -10,7 +10,7 @@
           B
         </div> -->
         <div class="flex flex-col leading-none gap-y-1">
-          <span class="text-[9px] uppercase tracking-[0.16em] text-slate-500"> Booking CMS </span>
+          <span class="text-[11px] uppercase tracking-[0.16em] text-slate-500"> Booking CMS </span>
           <span class="text-[10px] text-slate-400"> Admin </span>
         </div>
       </div>
@@ -56,7 +56,7 @@
             class="absolute mt-1 w-56 z-50 bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl py-1.5"
           >
             <div class="px-2 pb-1">
-              <div class="text-[9px] text-slate-500">Switch business</div>
+              <div class="text-[11px] text-slate-500">Switch business</div>
             </div>
 
             <button
@@ -93,7 +93,7 @@
 
             <div class="border-t border-slate-900 mt-1 pt-1">
               <button
-                class="w-full flex items-center gap-2 px-2.5 py-1.5 text-[9px] text-slate-400 hover:bg-slate-900/90 hover:text-slate-100 transition"
+                class="w-full flex items-center gap-2 px-2.5 py-1.5 text-[11px] text-slate-400 hover:bg-slate-900/90 hover:text-slate-100 transition"
                 @click="goToBusinessSelect"
               >
                 <ArrowLeftRight class="w-3.5 h-3.5" />
@@ -111,16 +111,16 @@
         @click="toggleUserMenu"
       >
         <div
-          class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-[9px] font-semibold text-slate-200"
+          class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-[11px] font-semibold text-slate-200"
         >
           {{ userInitials }}
         </div>
         <div class="hidden sm:flex flex-col leading-tight text-left">
-          <span class="text-[9px] text-slate-400">
+          <span class="text-[11px] text-slate-400">
             {{ authStore.loadingMe ? 'Loading account…' : 'Logged in' }}
           </span>
 
-          <span class="text-[9px] text-slate-200 truncate max-w-[120px]">
+          <span class="text-[11px] text-slate-200 truncate max-w-[120px]">
             {{ userEmail || 'Account' }}
           </span>
         </div>
@@ -136,14 +136,14 @@
           class="absolute right-0 mt-1 w-40 bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl py-1.5 z-50"
         >
           <button
-            class="w-full flex items-center gap-2 px-2.5 py-1.5 text-[9px] text-slate-300 hover:bg-slate-900/90 transition"
+            class="w-full flex items-center gap-2 px-2.5 py-1.5 text-[11px] text-slate-300 hover:bg-slate-900/90 transition"
             @click="goToBusinessSelect"
           >
             <Building2 class="w-3.5 h-3.5 text-slate-500" />
             <span>Switch business</span>
           </button>
           <button
-            class="w-full flex items-center gap-2 px-2.5 py-1.5 text-[9px] text-rose-300 hover:bg-rose-500/10 transition"
+            class="w-full flex items-center gap-2 px-2.5 py-1.5 text-[11px] text-rose-300 hover:bg-rose-500/10 transition"
             @click="logout"
           >
             <LogOut class="w-3.5 h-3.5" />
