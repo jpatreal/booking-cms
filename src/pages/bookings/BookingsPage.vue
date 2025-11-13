@@ -191,13 +191,13 @@
             <!-- Status -->
             <div class="flex flex-col gap-0.5">
               <BookingStatusBadge :status="b.status" />
-              <span
+              <!-- <span
                 v-if="b.paymentStatus"
                 class="inline-flex w-fit px-1.5 py-0.5 rounded-full text-xs"
                 :class="paymentClass(b.paymentStatus)"
               >
                 {{ b.paymentStatus }}
-              </span>
+              </span> -->
             </div>
 
             <!-- Actions -->

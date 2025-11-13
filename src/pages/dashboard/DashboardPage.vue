@@ -10,7 +10,7 @@
       </div>
 
       <div class="text-xs text-right text-slate-400">
-        <div class="uppercase tracking-wide">Mock data</div>
+        <div class="uppercase tracking-wide">Data</div>
         <div>Today: {{ today }}</div>
       </div>
     </header>
@@ -31,7 +31,7 @@
 
       <DashboardStatCard
         label="Est. revenue today"
-        :value="`₱${stats.revenueToday.toLocaleString()}`"
+        :value="`₱${(stats.revenueToday ?? 0).toLocaleString()}`"
         helper="Based on confirmed bookings"
       />
 
@@ -50,7 +50,6 @@
           <h2 class="text-sm font-semibold text-slate-100">
             Upcoming bookings (today &amp; tomorrow)
           </h2>
-          <span class="text-[10px] text-slate-500"> Mock sample for layout only </span>
         </div>
 
         <div v-if="upcomingBookings.length === 0" class="text-xs text-slate-500">
@@ -68,9 +67,12 @@
               <span class="text-slate-400"> {{ b.customer }} • {{ b.staff }} </span>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-slate-300"> ₱{{ b.price.toLocaleString() }} </span>
-              <span class="px-2 py-0.5 rounded-full text-[9px]" :class="statusClass(b.status)">
-                {{ b.status }}
+              <span class="text-slate-300"> ₱{{ (b.price ?? 0).toLocaleString() }} </span>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] mt-1"
+                :class="statusClass(b.status)"
+              >
+                {{ statusLabel(b.status) }}
               </span>
             </div>
           </li>
@@ -83,7 +85,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-sm font-semibold text-slate-100">Top services (last 30d)</h2>
-            <span class="text-[10px] text-slate-500">Mock snapshot</span>
+            <span class="text-[10px] text-slate-500">Snapshot</span>
           </div>
 
           <ul class="space-y-1.5 text-xs">
@@ -91,7 +93,7 @@
               <div class="flex flex-col">
                 <span class="text-slate-100">{{ s.name }}</span>
                 <span class="text-slate-500">
-                  {{ s.count }} bookings • ₱{{ s.revenue.toLocaleString() }}
+                  {{ s.count }} bookings • ₱{{ (s.revenue ?? 0).toLocaleString() }}
                 </span>
               </div>
               <span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
@@ -124,130 +126,99 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useBusinessStore } from '../../stores/business';
-import DashboardStatCard from '../../components/dashboard/DashboardStatCard.vue';
+import api from '../../api/api';
 
 const businessStore = useBusinessStore();
 
 const businessName = computed(() => businessStore.current?.name || 'Your business');
-
 const today = new Date().toLocaleDateString('en-PH', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
 });
 
-/**
- * Mock stats for now.
- * Replace with API calls later.
- */
-const stats = {
-  bookingsToday: 9,
-  upcomingWeek: 34,
-  revenueToday: 8920,
-  noShowRate: 3.2,
-};
+const stats = ref({
+  bookingsToday: 0,
+  upcomingWeek: 0,
+  revenueToday: 0,
+  noShowRate: 0,
+});
 
-const upcomingBookings = [
-  {
-    id: '1',
-    time: '09:00 AM',
-    customer: 'Juan Dela Cruz',
-    service: 'General Consultation',
-    staff: 'Dr. Santos',
-    price: 600,
-    status: 'Confirmed',
-  },
-  {
-    id: '2',
-    time: '10:30 AM',
-    customer: 'Maria Reyes',
-    service: 'Teeth Cleaning',
-    staff: 'Dr. Cruz',
-    price: 1200,
-    status: 'Confirmed',
-  },
-  {
-    id: '3',
-    time: '01:00 PM',
-    customer: 'Mark Lee',
-    service: 'Haircut + Beard',
-    staff: 'Alex (Barber)',
-    price: 350,
-    status: 'Pending',
-  },
-  {
-    id: '4',
-    time: '03:15 PM',
-    customer: 'Anna Kim',
-    service: 'Full Body Massage',
-    staff: 'Joy',
-    price: 800,
-    status: 'Confirmed',
-  },
-];
+const upcomingBookings = ref<any[]>([]);
+const topServices = ref<any[]>([]);
+const staffStats = ref<any[]>([]);
 
-const topServices = [
-  {
-    name: 'General Consultation',
-    count: 42,
-    revenue: 25200,
-    share: 35,
-  },
-  {
-    name: 'Teeth Cleaning',
-    count: 27,
-    revenue: 32400,
-    share: 30,
-  },
-  {
-    name: 'Haircut + Styling',
-    count: 31,
-    revenue: 9300,
-    share: 20,
-  },
-  {
-    name: 'Massage (1 hr)',
-    count: 15,
-    revenue: 12000,
-    share: 15,
-  },
-];
-
-const staffStats = [
-  {
-    name: 'Dr. Santos',
-    bookings: 18,
-    revenue: 10800,
-  },
-  {
-    name: 'Dr. Cruz',
-    bookings: 14,
-    revenue: 16800,
-  },
-  {
-    name: 'Alex (Barber)',
-    bookings: 10,
-    revenue: 3500,
-  },
-  {
-    name: 'Joy',
-    bookings: 8,
-    revenue: 6400,
-  },
-];
+function formatTimeLocal(utc: string) {
+  return new Date(utc).toLocaleTimeString('en-PH', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
 function statusClass(status: string) {
   switch (status) {
-    case 'Confirmed':
+    case 'CONFIRMED':
       return 'bg-emerald-900/70 text-emerald-300 border border-emerald-700/60';
-    case 'Pending':
+    case 'PENDING':
       return 'bg-amber-900/60 text-amber-300 border border-amber-700/60';
-    case 'Cancelled':
+    case 'CANCELLED':
       return 'bg-rose-900/60 text-rose-300 border border-rose-700/60';
     default:
       return 'bg-slate-800 text-slate-300';
   }
 }
+
+function statusLabel(status: string) {
+  switch (status) {
+    case 'CONFIRMED':
+      return 'Confirmed';
+    case 'PENDING':
+      return 'Pending';
+    case 'CANCELLED':
+      return 'Cancelled';
+    default:
+      return status;
+  }
+}
+
+onMounted(async () => {
+  const bizId = businessStore.current?.id;
+  if (!bizId) return;
+
+  const res = await api.get(`/businesses/${bizId}/dashboard`);
+  const data = res.data.data;
+
+  stats.value = {
+    bookingsToday: data.stats.bookingsToday,
+    upcomingWeek: data.stats.upcomingWeek,
+    revenueToday: (data.stats.revenueTodayCents ?? 0) / 100,
+    noShowRate: data.stats.noShowRatePercent ?? 0,
+  };
+
+  // 🔥 Map upcoming bookings into what the template expects
+  upcomingBookings.value = (data.upcomingBookings || []).map((b: any) => ({
+    id: b.id,
+    time: formatTimeLocal(b.startUtc),
+    customer: b.customerName,
+    service: b.serviceName,
+    staff: b.staffName,
+    price: (b.bookedPriceCents ?? 0) / 100,
+    status: b.status,
+  }));
+
+  topServices.value = (data.topServices || []).map((s: any) => ({
+    name: s.name,
+    count: s.bookings,
+    revenue: (s.revenueCents ?? 0) / 100,
+    share: s.sharePercent,
+  }));
+
+  staffStats.value = (data.staffStats || []).map((s: any) => ({
+    name: s.name,
+    bookings: s.bookings,
+    revenue: (s.revenueCents ?? 0) / 100,
+  }));
+});
 </script>
