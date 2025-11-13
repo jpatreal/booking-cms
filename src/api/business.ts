@@ -16,6 +16,7 @@ export interface Business {
   logoUrl: string;
   tagline: string;
   addressJson: any;
+  contactJson: any;
   hours: BusinessHourItem[];
 }
 
@@ -36,6 +37,7 @@ function mapBusiness(raw: any): Business {
     logoUrl: raw.logoUrl,
     tagline: raw.tagline,
     addressJson: raw.addressJson,
+    contactJson: raw.contactJson,
     hours: Array.isArray(raw.hours)
       ? raw.hours.map((h: any) => ({
           dayOfWeek: h.dayOfWeek,

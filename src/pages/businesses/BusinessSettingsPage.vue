@@ -56,7 +56,6 @@
                 <option value="Asia/Singapore">Asia/Singapore</option>
                 <option value="America/New_York">America/New_York</option>
                 <option value="Europe/London">Europe/London</option>
-                <!-- Add more as needed later -->
               </select>
               <p class="cms-caption-muted">
                 Used to calculate available slots and display times to customers.
@@ -73,6 +72,9 @@
 
         <BrandingCard v-model="branding" :saving="savingBranding" @save="saveBranding" />
         <AddressCard v-model="address" :saving="savingAddress" @save="saveAddress" />
+
+        <!-- NEW: ContactCard component -->
+        <ContactCard v-model="contact" :saving="savingContact" @save="saveContact" />
 
         <!-- Hours card -->
         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl px-4 py-3 space-y-3">
@@ -106,7 +108,6 @@
 
       <!-- Right: meta + danger -->
       <div class="space-y-4">
-        <!-- Meta / limits -->
         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl px-4 py-3 space-y-2">
           <div>
             <h2 class="text-sm font-semibold text-slate-50">Plan & usage</h2>
@@ -136,7 +137,6 @@
           </div>
         </div>
 
-        <!-- Danger zone -->
         <div class="bg-slate-950/90 border border-rose-900/60 rounded-2xl px-4 py-3 space-y-2">
           <div>
             <h2 class="text-sm font-semibold text-rose-300">Danger zone</h2>
@@ -152,7 +152,6 @@
       </div>
     </div>
 
-    <!-- Confirm delete dialog -->
     <ConfirmDialog
       :open="confirmDelete"
       :loading="deleting"
@@ -178,6 +177,7 @@ import ConfirmDialog from '../../components/ui/ConfirmDialog.vue';
 import BusinessHoursEditor from '../../components/business/BusinessHoursEditor.vue';
 import BrandingCard from '../../components/business/BrandingCard.vue';
 import AddressCard from '../../components/business/AddressCard.vue';
+import ContactCard from '../../components/business/ContactCard.vue';
 
 import {
   getBusiness,
@@ -209,6 +209,36 @@ const savingHours = ref(false);
 const deleting = ref(false);
 const confirmDelete = ref(false);
 
+const savingBranding = ref(false);
+const savingAddress = ref(false);
+const savingContact = ref(false);
+
+const branding = ref({
+  logoUrl: '',
+  primaryColor: '#3b82f6',
+  tagline: 'Book your appointment in seconds.',
+});
+
+const address = ref({
+  line1: '',
+  line2: '',
+  city: '',
+  province: '',
+  postalCode: '',
+  country: '',
+});
+
+const contact = ref({
+  email: '',
+  phone: '',
+  website: '',
+  facebookUrl: '',
+  instagramUrl: '',
+  tiktokUrl: '',
+  messenger: '',
+  viber: '',
+});
+
 const deleteMessage = computed(() => {
   if (!business.value) return 'Are you sure you want to delete this business?';
   return `You are about to delete “${business.value.name}”. This will disable its bookings and hide it from your dashboard. You can keep other businesses active.`;
@@ -227,7 +257,6 @@ onMounted(async () => {
       businessStore.current || (businessStore.list.length ? businessStore.list[0] : null);
 
     if (!effectiveBiz) {
-      // No business context: bounce to selector
       router.push({ name: 'business-select' });
       return;
     }
@@ -238,13 +267,14 @@ onMounted(async () => {
     form.value.name = full.name;
     form.value.timezone = full.timezone || 'UTC';
     hoursDraft.value = full.hours || [];
+
     branding.value = {
       logoUrl: full.logoUrl ?? '',
       primaryColor: normalizeHex(full.primaryColor) ?? '#3b82f6',
       tagline: full.tagline ?? 'Book your appointment in seconds.',
     };
 
-    const a = full.addressJson || {};
+    const a: any = (full as any).addressJson || (full as any).address || {};
     address.value = {
       line1: a.line1 || '',
       line2: a.line2 || '',
@@ -252,6 +282,18 @@ onMounted(async () => {
       province: a.province || '',
       postalCode: a.postalCode || '',
       country: a.country || '',
+    };
+
+    const c: any = (full as any).contactJson || (full as any).contact || {};
+    contact.value = {
+      email: c.email || '',
+      phone: c.phone || '',
+      website: c.website || '',
+      facebookUrl: c.facebookUrl || '',
+      instagramUrl: c.instagramUrl || '',
+      tiktokUrl: c.tiktokUrl || '',
+      messenger: c.messenger || '',
+      viber: c.viber || '',
     };
   } catch (e) {
     toasts.error('Failed to load business settings.');
@@ -276,7 +318,6 @@ async function saveProfile() {
     });
     business.value = updated;
 
-    // Sync Pinia current
     businessStore.setCurrent({
       id: updated.id,
       name: updated.name,
@@ -307,52 +348,6 @@ async function saveHours() {
   }
 }
 
-function onCloseDelete() {
-  if (deleting.value) return;
-  confirmDelete.value = false;
-}
-
-async function performDelete() {
-  if (!business.value) return;
-  deleting.value = true;
-  try {
-    await softDeleteBusiness(business.value.id);
-    toasts.success('Business deleted.');
-
-    // Refresh business list and redirect to selector
-    await businessStore.fetchMyBusinesses();
-    businessStore.current = null as any;
-
-    router.push({ name: 'business-select' });
-  } catch (e) {
-    toasts.error('Failed to delete business.');
-  } finally {
-    deleting.value = false;
-    confirmDelete.value = false;
-  }
-}
-
-// Branding and adress
-
-const savingBranding = ref(false);
-const savingAddress = ref(false);
-
-const branding = ref({
-  logoUrl: '',
-  primaryColor: '#3b82f6',
-  tagline: 'Book your appointment in seconds.',
-});
-
-const address = ref({
-  line1: '',
-  line2: '',
-  city: '',
-  province: '',
-  postalCode: '',
-  country: '',
-});
-
-// handlers
 async function saveBranding() {
   if (!business.value) return;
   const hex = branding.value.primaryColor?.trim();
@@ -390,11 +385,73 @@ async function saveAddress() {
   }
 }
 
+async function saveContact() {
+  if (!business.value) return;
+  savingContact.value = true;
+
+  try {
+    const src = contact.value;
+    const clean: Record<string, string> = {};
+
+    (Object.keys(src) as (keyof typeof src)[]).forEach((key) => {
+      const raw = src[key] ?? '';
+      const v = typeof raw === 'string' ? raw.trim() : raw;
+      if (v) clean[key] = v;
+    });
+
+    const payload: any = { contact: clean };
+
+    const updated = await updateBusiness(business.value.id, payload);
+    business.value = updated;
+
+    const c: any = (updated as any).contactJson || (updated as any).contact || {};
+    contact.value = {
+      email: c.email || '',
+      phone: c.phone || '',
+      website: c.website || '',
+      facebookUrl: c.facebookUrl || '',
+      instagramUrl: c.instagramUrl || '',
+      tiktokUrl: c.tiktokUrl || '',
+      messenger: c.messenger || '',
+      viber: c.viber || '',
+    };
+
+    toasts.success('Contact details saved.');
+  } catch {
+    toasts.error('Failed to save contact details.');
+  } finally {
+    savingContact.value = false;
+  }
+}
+
+function onCloseDelete() {
+  if (deleting.value) return;
+  confirmDelete.value = false;
+}
+
+async function performDelete() {
+  if (!business.value) return;
+  deleting.value = true;
+  try {
+    await softDeleteBusiness(business.value.id);
+    toasts.success('Business deleted.');
+
+    await businessStore.fetchMyBusinesses();
+    businessStore.current = null as any;
+
+    router.push({ name: 'business-select' });
+  } catch (e) {
+    toasts.error('Failed to delete business.');
+  } finally {
+    deleting.value = false;
+    confirmDelete.value = false;
+  }
+}
+
 function normalizeHex(v?: string | null) {
   if (!v) return null;
   let x = v.trim().toLowerCase();
   if (!x.startsWith('#')) x = `#${x}`;
-  // expand 3-digit hex (e.g. #abc -> #aabbcc)
   if (/^#[0-9a-f]{3}$/i.test(x)) {
     x = `#${x[1]}${x[1]}${x[2]}${x[2]}${x[3]}${x[3]}`;
   }
